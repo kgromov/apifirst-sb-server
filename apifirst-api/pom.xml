@@ -51,6 +51,8 @@
                             <inputSpec>https://api.redocly.com/registry/bundle/kgromov/API%20First%20-%20Spring%20Boot%20-%20Development/v1/openapi.yaml?branch=development</inputSpec>
                             <generatorName>java</generatorName>
                             <library>resttemplate</library>
+<!--                            <library>webclient</library>-->
+                            <modelPackage>org.kgromov.apifirst.model</modelPackage>
                             <generateApiDocumentation>false</generateApiDocumentation>
                             <generateModelDocumentation>false</generateModelDocumentation>
                             <generateApiTests>false</generateApiTests>
@@ -62,6 +64,7 @@
                                 <sourceFolder>src/gen/java/main</sourceFolder>
                                 <useJakartaEe>true</useJakartaEe>
                                 <useBeanValidation>true</useBeanValidation>
+<!--                                <generateClientAsBean>true</generateClientAsBean>-->
                             </configOptions>
                         </configuration>
                     </execution>
