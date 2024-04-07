@@ -47,6 +47,7 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
+                        <!-- plugin configuration options - kind of language agnostic -->
                         <configuration>
                             <inputSpec>https://api.redocly.com/registry/bundle/kgromov/API%20First%20-%20Spring%20Boot%20-%20Development/v1/openapi.yaml?branch=development</inputSpec>
                             <generatorName>java</generatorName>
@@ -60,6 +61,7 @@
                             <generateModelTests>false</generateModelTests>
                             <generateAliasAsModel>false</generateAliasAsModel>
                             <generateApis>false</generateApis>
+                            <!-- language specific configuration options -->
                             <configOptions>
                                 <sourceFolder>src/gen/java/main</sourceFolder>
                                 <useJakartaEe>true</useJakartaEe>
