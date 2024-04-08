@@ -141,7 +141,6 @@ public class DataLoader implements CommandLineRunner {
         log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTime(TimeUnit.MILLISECONDS));
     }
 
-    // TODO: fix specification to have name as Name (not Address type) and shipAddress
     private void populateOrders() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("populateOrders");
@@ -157,9 +156,9 @@ public class DataLoader implements CommandLineRunner {
         Order order1 = Order.builder()
                 .customer(OrderCustomer.builder()
                         .id(savedCustomer1.getId())
-//                        .name(savedCustomer1.getName())
+                        .name(savedCustomer1.getName())
                         .billToAddress(savedCustomer1.getBillToAddress())
-                        .name(savedCustomer1.getShipToAddress())
+                        .shipToAddress(savedCustomer1.getShipToAddress())
                         .phone(savedCustomer1.getPhone())
                         .selectedPaymentMethod(savedCustomer1.getPaymentMethods().get(0))
                         .build())
@@ -188,8 +187,9 @@ public class DataLoader implements CommandLineRunner {
         Order order2 = Order.builder()
                 .customer(OrderCustomer.builder()
                         .id(savedCustomer2.getId())
+                        .name(savedCustomer1.getName())
                         .billToAddress(savedCustomer2.getBillToAddress())
-                        .name(savedCustomer2.getShipToAddress())
+                        .shipToAddress(savedCustomer2.getShipToAddress())
                         .phone(savedCustomer2.getPhone())
                         .selectedPaymentMethod(savedCustomer2.getPaymentMethods().get(0))
                         .build())
