@@ -13,7 +13,9 @@ import org.springframework.util.StopWatch;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Spliterator;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,54 +31,6 @@ public class DataLoader implements CommandLineRunner {
         this.populateCustomersData();
         this.populateProductsData();
         this.populateOrders();
-    }
-
-    private void populateProductsData() {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start("populateProductData");
-        Product product1 = Product.builder()
-                .description("Product 1")
-                .categories(List.of(Category.builder()
-                        .name("Category 1")
-                        .description("Category 1 Description")
-                        .build()))
-                .cost("12.99")
-                .price("14.99")
-                .dimensions(Dimensions.builder()
-                        .height(1)
-                        .length(2)
-                        .width(3)
-                        .build())
-                .images(List.of(Image.builder()
-                        .uri(URI.create("http://example.com/image1"))
-                        .altText("Image 1")
-                        .build()))
-                .build();
-
-        Product product2 = Product.builder()
-                .description("Product 2")
-                .categories(List.of(Category.builder()
-                        .name("Category 2")
-                        .description("Category 2 Description")
-                        .build()))
-                .cost("12.99")
-                .price("14.99")
-                .dimensions(Dimensions.builder()
-                        .height(1)
-                        .length(2)
-                        .width(3)
-                        .build())
-                .images(List.of(Image.builder()
-                        .uri(URI.create("http://example.com/image2"))
-                        .altText("Image 2")
-                        .build()))
-                .build();
-
-        productRepository.save(product1);
-        productRepository.save(product2);
-        stopWatch.stop();
-        var taskInfo = stopWatch.lastTaskInfo();
-        log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTime(TimeUnit.MILLISECONDS));
     }
 
     private void populateCustomersData() {
@@ -136,13 +90,70 @@ public class DataLoader implements CommandLineRunner {
         customerRepository.save(customer2);
         stopWatch.stop();
         var taskInfo = stopWatch.lastTaskInfo();
-        log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTimeMillis());
+        log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTime(TimeUnit.MILLISECONDS));
+    }
+
+    private void populateProductsData() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("populateProductData");
+        Product product1 = Product.builder()
+                .description("Product 1")
+                .categories(List.of(Category.builder()
+                        .name("Category 1")
+                        .description("Category 1 Description")
+                        .build()))
+                .cost("12.99")
+                .price("14.99")
+                .dimensions(Dimensions.builder()
+                        .height(1)
+                        .length(2)
+                        .width(3)
+                        .build())
+                .images(List.of(Image.builder()
+                        .uri(URI.create("http://example.com/image1"))
+                        .altText("Image 1")
+                        .build()))
+                .build();
+
+        Product product2 = Product.builder()
+                .description("Product 2")
+                .categories(List.of(Category.builder()
+                        .name("Category 2")
+                        .description("Category 2 Description")
+                        .build()))
+                .cost("12.99")
+                .price("14.99")
+                .dimensions(Dimensions.builder()
+                        .height(1)
+                        .length(2)
+                        .width(3)
+                        .build())
+                .images(List.of(Image.builder()
+                        .uri(URI.create("http://example.com/image2"))
+                        .altText("Image 2")
+                        .build()))
+                .build();
+
+        productRepository.save(product1);
+        productRepository.save(product2);
+        stopWatch.stop();
+        var taskInfo = stopWatch.lastTaskInfo();
+        log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTime(TimeUnit.MILLISECONDS));
     }
 
     // TODO: fix specification to have name as Name (not Address type) and shipAddress
-    private void populateOrders(Customer savedCustomer1, Customer savedCustomer2, Product savedProduct1, Product savedProduct2) {
+    private void populateOrders() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("populateOrders");
+
+        List<Customer> customers = StreamSupport.stream(customerRepository.findAll().spliterator(), false).toList();
+        Customer savedCustomer1 = customers.get(0);
+        Customer savedCustomer2 = customers.get(1);
+
+        List<Product> products = StreamSupport.stream(productRepository.findAll().spliterator(), false).toList();
+        Product savedProduct1 = products.get(0);
+        Product savedProduct2 = products.get(1);
+
         Order order1 = Order.builder()
                 .customer(OrderCustomer.builder()
                         .id(savedCustomer1.getId())
@@ -206,5 +217,8 @@ public class DataLoader implements CommandLineRunner {
 
         orderRepository.save(order1);
         orderRepository.save(order2);
+        stopWatch.stop();
+        var taskInfo = stopWatch.lastTaskInfo();
+        log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTime(TimeUnit.MILLISECONDS));
     }
 }

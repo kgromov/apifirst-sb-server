@@ -59,7 +59,9 @@ public class ProductRepositoryImpl extends AbstractMapRepository<Product, UUID> 
                     .height(entity.getDimensions().getHeight())
                     .build());
         }
-        return (S) builder.build();
+        Product product = builder.build();
+        entityMap.put(product.getId(), product);
+        return (S) product;
     }
 
     @Override
