@@ -6,19 +6,12 @@ import org.kgromov.apifirst.model.PaymentMethod;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
-import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 
 @Repository
-public class CustomerRepositoryImpl<S extends Customer> implements CustomerRepository {
-
-    private final Map<UUID, Customer> entityMap = new ConcurrentHashMap<>();
+public class CustomerRepositoryImpl extends AbstractMapRepository<Customer, UUID> implements CustomerRepository {
 
     @Override
     public <S extends Customer> S save(S entity) {
@@ -83,63 +76,7 @@ public class CustomerRepositoryImpl<S extends Customer> implements CustomerRepos
     }
 
     @Override
-    public <S extends Customer> Iterable<S> saveAll(Iterable<S> entities) {
-        return StreamSupport.stream(entities.spliterator(), false)
-                .map(this::save)
-                .collect(toList());
-    }
-
-    @Override
-    public Optional<Customer> findById(UUID uuid) {
-        return Optional.of(entityMap.get(uuid));
-    }
-
-    @Override
-    public boolean existsById(UUID uuid) {
-        return entityMap.get(uuid) != null;
-    }
-
-    @Override
-    public Iterable<Customer> findAll() {
-        return entityMap.values();
-    }
-
-    @Override
-    public Iterable<Customer> findAllById(Iterable<UUID> uuids) {
-        return StreamSupport.stream(uuids.spliterator(), false)
-                .map(this::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public long count() {
-        return entityMap.size();
-    }
-
-    @Override
-    public void deleteById(UUID uuid) {
-        entityMap.remove(uuid);
-    }
-
-    @Override
     public void delete(Customer entity) {
         entityMap.remove(entity.getId());
-    }
-
-    @Override
-    public void deleteAllById(Iterable<? extends UUID> uuids) {
-        uuids.forEach(this::deleteById);
-    }
-
-    @Override
-    public void deleteAll(Iterable<? extends Customer> entities) {
-        entities.forEach(this::delete);
-    }
-
-    @Override
-    public void deleteAll() {
-        entityMap.clear();
     }
 }

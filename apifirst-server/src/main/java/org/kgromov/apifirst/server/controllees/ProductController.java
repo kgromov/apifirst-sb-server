@@ -1,8 +1,8 @@
 package org.kgromov.apifirst.server.controllees;
 
 import lombok.RequiredArgsConstructor;
-import org.kgromov.apifirst.model.Customer;
-import org.kgromov.apifirst.server.services.CustomerService;
+import org.kgromov.apifirst.model.Product;
+import org.kgromov.apifirst.server.services.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,18 +13,18 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/customers")
+@RequestMapping("/v1/prooducts")
 @RequiredArgsConstructor
-public class CustomerController {
-    private final CustomerService customerService;
+public class ProductController {
+    private final ProductService productService;
 
     @GetMapping
-    ResponseEntity<List<Customer>> getCustomers() {
-        return ResponseEntity.ok(customerService.getCustomers());
+    ResponseEntity<List<Product>> getProducts() {
+        return ResponseEntity.ok(productService.getProducts());
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Customer> getCustomerById(@PathVariable UUID id) {
-        return ResponseEntity.ok(customerService.getCustomer(id));
+    ResponseEntity<Product> getProductById(@PathVariable UUID id) {
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 }

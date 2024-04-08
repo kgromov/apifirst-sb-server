@@ -2,25 +2,83 @@ package org.kgromov.apifirst.server.bootstrap;
 
 
 import lombok.RequiredArgsConstructor;
-import org.kgromov.apifirst.model.Address;
-import org.kgromov.apifirst.model.Customer;
-import org.kgromov.apifirst.model.Name;
-import org.kgromov.apifirst.model.PaymentMethod;
+import lombok.extern.slf4j.Slf4j;
+import org.kgromov.apifirst.model.*;
 import org.kgromov.apifirst.server.repositories.CustomerRepository;
+import org.kgromov.apifirst.server.repositories.ProductRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
+import java.net.URI;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class DataLoader implements CommandLineRunner {
 
     private final CustomerRepository customerRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public void run(String... args) {
+        this.populateCustomerData();
+        this.populateProductData();
+    }
 
+    private void populateProductData() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("populateProductData");
+        Product product1 = Product.builder()
+                .description("Product 1")
+                .categories(List.of(Category.builder()
+                        .name("Category 1")
+                        .description("Category 1 Description")
+                        .build()))
+                .cost("12.99")
+                .price("14.99")
+                .dimensions(Dimensions.builder()
+                        .height(1)
+                        .length(2)
+                        .width(3)
+                        .build())
+                .images(List.of(Image.builder()
+                        .uri(URI.create("http://example.com/image1"))
+                        .altText("Image 1")
+                        .build()))
+                .build();
+
+        Product product2 = Product.builder()
+                .description("Product 2")
+                .categories(List.of(Category.builder()
+                        .name("Category 2")
+                        .description("Category 2 Description")
+                        .build()))
+                .cost("12.99")
+                .price("14.99")
+                .dimensions(Dimensions.builder()
+                        .height(1)
+                        .length(2)
+                        .width(3)
+                        .build())
+                .images(List.of(Image.builder()
+                        .uri(URI.create("http://example.com/image2"))
+                        .altText("Image 2")
+                        .build()))
+                .build();
+
+        productRepository.save(product1);
+        productRepository.save(product2);
+        stopWatch.stop();
+        var taskInfo = stopWatch.lastTaskInfo();
+        log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTime(TimeUnit.MILLISECONDS));
+    }
+
+    private void populateCustomerData() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("populateCustomerData");
         Address address1 = Address.builder()
                 .addressLine1("1234 W Some Street")
                 .city("Some City")
@@ -73,6 +131,9 @@ public class DataLoader implements CommandLineRunner {
 
         customerRepository.save(customer1);
         customerRepository.save(customer2);
+        stopWatch.stop();
+        var taskInfo = stopWatch.lastTaskInfo();
+        log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTimeMillis());
     }
 }
 
