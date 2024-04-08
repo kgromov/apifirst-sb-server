@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kgromov.apifirst.model.*;
 import org.kgromov.apifirst.server.repositories.CustomerRepository;
+import org.kgromov.apifirst.server.repositories.OrderRepository;
 import org.kgromov.apifirst.server.repositories.ProductRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -21,14 +22,16 @@ public class DataLoader implements CommandLineRunner {
 
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public void run(String... args) {
-        this.populateCustomerData();
-        this.populateProductData();
+        this.populateCustomersData();
+        this.populateProductsData();
+        this.populateOrders();
     }
 
-    private void populateProductData() {
+    private void populateProductsData() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("populateProductData");
         Product product1 = Product.builder()
@@ -76,7 +79,7 @@ public class DataLoader implements CommandLineRunner {
         log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTime(TimeUnit.MILLISECONDS));
     }
 
-    private void populateCustomerData() {
+    private void populateCustomersData() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("populateCustomerData");
         Address address1 = Address.builder()
@@ -135,14 +138,73 @@ public class DataLoader implements CommandLineRunner {
         var taskInfo = stopWatch.lastTaskInfo();
         log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTimeMillis());
     }
+
+    // TODO: fix specification to have name as Name (not Address type) and shipAddress
+    private void populateOrders(Customer savedCustomer1, Customer savedCustomer2, Product savedProduct1, Product savedProduct2) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("populateOrders");
+        Order order1 = Order.builder()
+                .customer(OrderCustomer.builder()
+                        .id(savedCustomer1.getId())
+//                        .name(savedCustomer1.getName())
+                        .billToAddress(savedCustomer1.getBillToAddress())
+                        .name(savedCustomer1.getShipToAddress())
+                        .phone(savedCustomer1.getPhone())
+                        .selectedPaymentMethod(savedCustomer1.getPaymentMethods().get(0))
+                        .build())
+                .orderStatus(Order.OrderStatusEnum.NEW)
+                .shipmentInfo("shipment info")
+                .orderLines(List.of(OrderLine.builder()
+                                .product(OrderProduct.builder()
+                                        .id(savedProduct1.getId())
+                                        .description(savedProduct1.getDescription())
+                                        .price(savedProduct1.getPrice())
+                                        .build())
+                                .orderQuantity(1)
+                                .shipQuantity(1)
+                                .build(),
+                        OrderLine.builder()
+                                .product(OrderProduct.builder()
+                                        .id(savedProduct2.getId())
+                                        .description(savedProduct2.getDescription())
+                                        .price(savedProduct2.getPrice())
+                                        .build())
+                                .orderQuantity(1)
+                                .shipQuantity(1)
+                                .build()))
+                .build();
+
+        Order order2 = Order.builder()
+                .customer(OrderCustomer.builder()
+                        .id(savedCustomer2.getId())
+                        .billToAddress(savedCustomer2.getBillToAddress())
+                        .name(savedCustomer2.getShipToAddress())
+                        .phone(savedCustomer2.getPhone())
+                        .selectedPaymentMethod(savedCustomer2.getPaymentMethods().get(0))
+                        .build())
+                .orderStatus(Order.OrderStatusEnum.NEW)
+                .shipmentInfo("shipment info #2")
+                .orderLines(List.of(OrderLine.builder()
+                                .product(OrderProduct.builder()
+                                        .id(savedProduct1.getId())
+                                        .description(savedProduct1.getDescription())
+                                        .price(savedProduct1.getPrice())
+                                        .build())
+                                .orderQuantity(1)
+                                .shipQuantity(1)
+                                .build(),
+                        OrderLine.builder()
+                                .product(OrderProduct.builder()
+                                        .id(savedProduct2.getId())
+                                        .description(savedProduct2.getDescription())
+                                        .price(savedProduct2.getPrice())
+                                        .build())
+                                .orderQuantity(1)
+                                .shipQuantity(1)
+                                .build()))
+                .build();
+
+        orderRepository.save(order1);
+        orderRepository.save(order2);
+    }
 }
-
-
-
-
-
-
-
-
-
-
