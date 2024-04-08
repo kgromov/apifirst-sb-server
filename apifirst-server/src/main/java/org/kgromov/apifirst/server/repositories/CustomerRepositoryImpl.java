@@ -11,7 +11,7 @@ import java.util.UUID;
 import static java.util.stream.Collectors.toList;
 
 @Repository
-public class CustomerRepositoryImpl extends AbstractMapRepository<Customer, UUID> {
+public class CustomerRepositoryImpl extends AbstractMapRepository<Customer, UUID> implements CustomerRepository {
 
     @Override
     public <S extends Customer> S save(S entity) {
