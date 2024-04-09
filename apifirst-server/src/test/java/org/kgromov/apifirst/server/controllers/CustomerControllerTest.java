@@ -19,6 +19,8 @@ class CustomerControllerTest extends BaseE2ETest {
     void setUp() {
         super.setUp();
         this.testCustomer = customerRepository.findAll().iterator().next();
+        // workaround from https://bitbucket.org/atlassian/swagger-request-validator/issues/406/path-params-dont-work-with-openapi-version
+        System.setProperty("bind-type", "true");
     }
 
     @DisplayName("Test get all customers")

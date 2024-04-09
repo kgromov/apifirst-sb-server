@@ -1,5 +1,6 @@
 package org.kgromov.apifirst.server.controllers;
 
+import jakarta.servlet.Filter;
 import org.junit.jupiter.api.BeforeEach;
 import org.kgromov.apifirst.server.repositories.CustomerRepository;
 import org.kgromov.apifirst.server.repositories.OrderRepository;
@@ -14,12 +15,13 @@ public abstract class BaseE2ETest {
     @Autowired protected ProductRepository productRepository;
     @Autowired protected OrderRepository orderRepository;
     @Autowired protected WebApplicationContext wac;
-
+    @Autowired protected Filter validationFilter;
     public MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
+                .addFilter(validationFilter)
                 .build();
     }
 }
