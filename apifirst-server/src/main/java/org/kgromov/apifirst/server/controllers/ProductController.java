@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+import static org.kgromov.apifirst.server.controllers.ProductController.BASE_URL;
+
 @RestController
-@RequestMapping("/v1/products")
+@RequestMapping(BASE_URL)
 @RequiredArgsConstructor
 public class ProductController {
+    static final String BASE_URL = "/v1/products";
     private final ProductService productService;
 
     @GetMapping

@@ -16,7 +16,7 @@ import java.util.UUID;
 @RequestMapping(CustomerController.BASE_URL)
 @RequiredArgsConstructor
 public class CustomerController {
-    public static final String BASE_URL = "/v1/customers";
+    static final String BASE_URL = "/v1/customers";
     private final CustomerService customerService;
 
     @GetMapping
