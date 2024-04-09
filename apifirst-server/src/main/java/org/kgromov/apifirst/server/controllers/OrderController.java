@@ -1,4 +1,4 @@
-package org.kgromov.apifirst.server.controllees;
+package org.kgromov.apifirst.server.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.Order;
@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+import static org.kgromov.apifirst.server.controllers.OrderController.BASE_URL;
+
 @RestController
-@RequestMapping("/v1/orders")
+@RequestMapping(BASE_URL)
 @RequiredArgsConstructor
 public class OrderController {
+    static final String BASE_URL = "/v1/orders";
     private final OrderService orderService;
 
     @GetMapping
