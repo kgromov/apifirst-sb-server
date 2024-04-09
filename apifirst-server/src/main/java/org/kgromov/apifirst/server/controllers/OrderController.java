@@ -1,4 +1,4 @@
-package org.kgromov.apifirst.server.controllees;
+package org.kgromov.apifirst.server.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.Order;

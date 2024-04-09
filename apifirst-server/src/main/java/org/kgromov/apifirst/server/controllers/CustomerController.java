@@ -1,4 +1,4 @@
-package org.kgromov.apifirst.server.controllees;
+package org.kgromov.apifirst.server.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.Customer;
@@ -13,9 +13,10 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/customers")
+@RequestMapping(CustomerController.BASE_URL)
 @RequiredArgsConstructor
 public class CustomerController {
+    public static final String BASE_URL = "/v1/customers";
     private final CustomerService customerService;
 
     @GetMapping
