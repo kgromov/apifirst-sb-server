@@ -13,7 +13,6 @@ import org.springframework.util.StopWatch;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Spliterator;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
@@ -160,7 +159,7 @@ public class DataLoader implements CommandLineRunner {
                         .billToAddress(savedCustomer1.getBillToAddress())
                         .shipToAddress(savedCustomer1.getShipToAddress())
                         .phone(savedCustomer1.getPhone())
-                        .selectedPaymentMethod(savedCustomer1.getPaymentMethods().get(0))
+                        .selectedPaymentMethod(savedCustomer1.getPaymentMethods().getFirst())
                         .build())
                 .orderStatus(Order.OrderStatusEnum.NEW)
                 .shipmentInfo("shipment info")
@@ -191,7 +190,7 @@ public class DataLoader implements CommandLineRunner {
                         .billToAddress(savedCustomer2.getBillToAddress())
                         .shipToAddress(savedCustomer2.getShipToAddress())
                         .phone(savedCustomer2.getPhone())
-                        .selectedPaymentMethod(savedCustomer2.getPaymentMethods().get(0))
+                        .selectedPaymentMethod(savedCustomer2.getPaymentMethods().getFirst())
                         .build())
                 .orderStatus(Order.OrderStatusEnum.NEW)
                 .shipmentInfo("shipment info #2")
