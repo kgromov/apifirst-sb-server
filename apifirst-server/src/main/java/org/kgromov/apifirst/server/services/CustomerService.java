@@ -14,6 +14,10 @@ import java.util.stream.StreamSupport;
 public class CustomerService {
     private final CustomerRepository customerRepository;
 
+    public Customer createCustomer(Customer newCustomer) {
+        return customerRepository.save(newCustomer);
+    }
+
     public List<Customer> getCustomers() {
         return StreamSupport.stream(customerRepository.findAll().spliterator(), false).toList();
     }

@@ -3,15 +3,21 @@ package org.kgromov.apifirst.server.controllers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.kgromov.apifirst.model.Customer;
+import org.junit.platform.commons.util.ReflectionUtils;
+import org.kgromov.apifirst.model.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.net.URI;
+import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.kgromov.apifirst.server.controllers.CustomerController.BASE_URL;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @SpringBootTest
 class CustomerControllerTest extends BaseE2ETest {
     private Customer testCustomer;
@@ -22,6 +28,17 @@ class CustomerControllerTest extends BaseE2ETest {
         this.testCustomer = customerRepository.findAll().iterator().next();
         // workaround from https://bitbucket.org/atlassian/swagger-request-validator/issues/406/path-params-dont-work-with-openapi-version
         System.setProperty("bind-type", "true");
+    }
+
+    @DisplayName("Test new customer creation")
+    @Test
+    void createCustomer() throws Exception {
+        mockMvc.perform(post(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(testCustomer))
+                )
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"));
     }
 
     @DisplayName("Test get all customers")

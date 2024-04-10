@@ -14,6 +14,10 @@ import java.util.stream.StreamSupport;
 public class ProductService {
     private final ProductRepository productRepository;
 
+    public Product createProduct(Product newProduct) {
+        return productRepository.save(newProduct);
+    }
+
     public List<Product> getProducts() {
         return StreamSupport.stream(productRepository.findAll().spliterator(), false).toList();
     }

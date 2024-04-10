@@ -2,13 +2,13 @@ package org.kgromov.apifirst.server.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.Customer;
+import org.kgromov.apifirst.model.Product;
 import org.kgromov.apifirst.server.services.CustomerService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +18,14 @@ import java.util.UUID;
 public class CustomerController {
     static final String BASE_URL = "/v1/customers";
     private final CustomerService customerService;
+
+    @PostMapping
+    public ResponseEntity<Void> createProduct(@RequestBody Customer customer){
+        Customer createdCustomer = customerService.createCustomer(customer);
+        var uriComponents = UriComponentsBuilder.fromPath(BASE_URL + "/{customerId}")
+                .buildAndExpand(createdCustomer.getId());
+        return ResponseEntity.created(URI.create(uriComponents.getPath())).build();
+    }
 
     @GetMapping
     ResponseEntity<List<Customer>> getCustomers() {

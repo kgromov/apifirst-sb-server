@@ -1,5 +1,6 @@
 package org.kgromov.apifirst.server.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import org.junit.jupiter.api.BeforeEach;
 import org.kgromov.apifirst.server.repositories.CustomerRepository;
@@ -16,6 +17,7 @@ public abstract class BaseE2ETest {
     @Autowired protected OrderRepository orderRepository;
     @Autowired protected WebApplicationContext wac;
     @Autowired protected Filter validationFilter;
+    @Autowired protected ObjectMapper objectMapper;
     public MockMvc mockMvc;
 
     @BeforeEach
