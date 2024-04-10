@@ -3,6 +3,9 @@ package org.kgromov.apifirst.server.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import org.junit.jupiter.api.BeforeEach;
+import org.kgromov.apifirst.model.Customer;
+import org.kgromov.apifirst.model.Order;
+import org.kgromov.apifirst.model.Product;
 import org.kgromov.apifirst.server.repositories.CustomerRepository;
 import org.kgromov.apifirst.server.repositories.OrderRepository;
 import org.kgromov.apifirst.server.repositories.ProductRepository;
@@ -20,8 +23,17 @@ public abstract class BaseE2ETest {
     @Autowired protected ObjectMapper objectMapper;
     public MockMvc mockMvc;
 
+    protected Customer testCustomer;
+    protected Product testProduct;
+    protected Order testOrder;
+
     @BeforeEach
     void setUp() {
+        // workaround from https://bitbucket.org/atlassian/swagger-request-validator/issues/406/path-params-dont-work-with-openapi-version
+        System.setProperty("bind-type", "true");
+        testCustomer = customerRepository.findAll().iterator().next();
+        testProduct = productRepository.findAll().iterator().next();
+        testOrder = orderRepository.findAll().iterator().next();
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .addFilter(validationFilter)
                 .build();

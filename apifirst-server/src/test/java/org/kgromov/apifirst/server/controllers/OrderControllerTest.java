@@ -1,33 +1,45 @@
 package org.kgromov.apifirst.server.controllers;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.kgromov.apifirst.model.Order;
+import org.kgromov.apifirst.model.OrderCreate;
+import org.kgromov.apifirst.model.OrderLineCreate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.kgromov.apifirst.server.controllers.OrderController.BASE_URL;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 class OrderControllerTest extends BaseE2ETest {
-    private Order testOrder;
 
-    @BeforeEach
-    void setUp() {
-        super.setUp();
-        this.testOrder = orderRepository.findAll().iterator().next();
-        // workaround from https://bitbucket.org/atlassian/swagger-request-validator/issues/406/path-params-dont-work-with-openapi-version
-        System.setProperty("bind-type", "true");
+    @DisplayName("Test create new customer")
+    @Test
+    void createOrder() throws Exception {
+        OrderCreate orderCreate = OrderCreate.builder()
+                .customerId(testCustomer.getId())
+                .selectPaymentMethodId(testCustomer.getPaymentMethods().getFirst().getId())
+                .orderLines(List.of(OrderLineCreate.builder()
+                        .productId(testProduct.getId())
+                        .orderQuantity(1)
+                        .build()))
+                .build();
+        mockMvc.perform(post(OrderController.BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderCreate)))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"));
     }
+
 
     @DisplayName("Test get all products")
     @Test
-    void getCustomers() throws Exception {
+    void getOrders() throws Exception {
         mockMvc.perform(get(BASE_URL)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -36,7 +48,7 @@ class OrderControllerTest extends BaseE2ETest {
 
     @DisplayName("Test get existed product by id")
     @Test
-    void getCustomerById() throws Exception {
+    void getOrderById() throws Exception {
         mockMvc.perform(get(BASE_URL + "/{orderId}", testOrder.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

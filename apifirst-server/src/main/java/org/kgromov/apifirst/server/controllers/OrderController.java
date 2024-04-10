@@ -2,13 +2,12 @@ package org.kgromov.apifirst.server.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.Order;
+import org.kgromov.apifirst.model.OrderCreate;
 import org.kgromov.apifirst.server.services.OrderService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +19,12 @@ import static org.kgromov.apifirst.server.controllers.OrderController.BASE_URL;
 public class OrderController {
     static final String BASE_URL = "/v1/orders";
     private final OrderService orderService;
+
+    @PostMapping
+    public ResponseEntity<Void> saveNewOrder(@RequestBody OrderCreate orderCreate){
+        Order savedOrder = orderService.saveNewOrder(orderCreate);
+        return ResponseEntity.created(URI.create(BASE_URL + "/" + savedOrder.getId())).build();
+    }
 
     @GetMapping
     ResponseEntity<List<Order>> getOrders() {

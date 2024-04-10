@@ -1,16 +1,9 @@
 package org.kgromov.apifirst.server.controllers;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.util.ReflectionUtils;
-import org.kgromov.apifirst.model.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.net.URI;
-import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.kgromov.apifirst.server.controllers.CustomerController.BASE_URL;
@@ -20,15 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 class CustomerControllerTest extends BaseE2ETest {
-    private Customer testCustomer;
-
-    @BeforeEach
-    void setUp() {
-        super.setUp();
-        this.testCustomer = customerRepository.findAll().iterator().next();
-        // workaround from https://bitbucket.org/atlassian/swagger-request-validator/issues/406/path-params-dont-work-with-openapi-version
-        System.setProperty("bind-type", "true");
-    }
 
     @DisplayName("Test new customer creation")
     @Test
