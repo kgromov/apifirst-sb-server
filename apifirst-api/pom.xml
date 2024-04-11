@@ -57,6 +57,7 @@
                             <generateModelTests>false</generateModelTests>
                             <generateAliasAsModel>false</generateAliasAsModel>
                             <generateApis>false</generateApis>
+                            <modelNameSuffix>Dto</modelNameSuffix>
                             <!-- language specific configuration options -->
                             <configOptions>
                                 <sourceFolder>src/gen/java/main</sourceFolder>

@@ -1,8 +1,8 @@
 package org.kgromov.apifirst.server.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.kgromov.apifirst.model.Customer;
-import org.kgromov.apifirst.model.Product;
+import org.kgromov.apifirst.model.CustomerDto;
+import org.kgromov.apifirst.model.ProductDto;
 import org.kgromov.apifirst.server.services.CustomerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,20 +20,20 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<Void> createProduct(@RequestBody Customer customer){
-        Customer createdCustomer = customerService.createCustomer(customer);
+    public ResponseEntity<Void> createProduct(@RequestBody CustomerDto customer){
+        CustomerDto createdCustomer = customerService.createCustomer(customer);
         var uriComponents = UriComponentsBuilder.fromPath(BASE_URL + "/{customerId}")
                 .buildAndExpand(createdCustomer.getId());
         return ResponseEntity.created(URI.create(uriComponents.getPath())).build();
     }
 
     @GetMapping
-    ResponseEntity<List<Customer>> getCustomers() {
+    ResponseEntity<List<CustomerDto>> getCustomers() {
         return ResponseEntity.ok(customerService.getCustomers());
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Customer> getCustomerById(@PathVariable UUID id) {
+    ResponseEntity<CustomerDto> getCustomerById(@PathVariable UUID id) {
         return ResponseEntity.ok(customerService.getCustomer(id));
     }
 }

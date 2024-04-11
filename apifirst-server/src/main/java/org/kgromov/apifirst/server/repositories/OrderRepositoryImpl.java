@@ -1,19 +1,20 @@
 package org.kgromov.apifirst.server.repositories;
 
-import org.kgromov.apifirst.model.Order;
-import org.kgromov.apifirst.model.OrderLine;
+import org.kgromov.apifirst.model.OrderDto;
+import org.kgromov.apifirst.model.OrderLineDto;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Profile("in-map")
 @Repository
-public class OrderRepositoryImpl extends AbstractMapRepository<Order, UUID> implements OrderRepository {
+public class OrderRepositoryImpl extends AbstractMapRepository<OrderDto, UUID> implements OrderRepository {
     @Override
-    public <S extends Order> S save(S entity) {
-        Order.OrderBuilder builder = Order.builder();
-
+    public <S extends OrderDto> S save(S entity) {
+       var builder = OrderDto.builder();
         builder.id(UUID.randomUUID())
                 .orderStatus(entity.getOrderStatus())
                 .shipmentInfo(entity.getShipmentInfo())
@@ -27,7 +28,7 @@ public class OrderRepositoryImpl extends AbstractMapRepository<Order, UUID> impl
         if (entity.getOrderLines() != null){
             builder.orderLines(entity.getOrderLines().stream()
                     .map(orderLine -> {
-                        return OrderLine.builder()
+                        return OrderLineDto.builder()
                                 .id(UUID.randomUUID())
                                 .product(orderLine.getProduct()) //might cause NPE
                                 .orderQuantity(orderLine.getOrderQuantity())
@@ -39,13 +40,13 @@ public class OrderRepositoryImpl extends AbstractMapRepository<Order, UUID> impl
                     .collect(Collectors.toList()));
         }
 
-        Order savedEntity = builder.build();
+        OrderDto savedEntity = builder.build();
         entityMap.put(savedEntity.getId(), savedEntity);
         return (S) savedEntity;
     }
 
     @Override
-    public void delete(Order entity) {
+    public void delete(OrderDto entity) {
         this.entityMap.remove(entity.getId());
     }
 }

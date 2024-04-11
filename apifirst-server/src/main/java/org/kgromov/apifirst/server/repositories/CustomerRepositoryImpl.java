@@ -1,8 +1,9 @@
 package org.kgromov.apifirst.server.repositories;
 
-import org.kgromov.apifirst.model.Address;
-import org.kgromov.apifirst.model.Customer;
-import org.kgromov.apifirst.model.PaymentMethod;
+import org.kgromov.apifirst.model.AddressDto;
+import org.kgromov.apifirst.model.CustomerDto;
+import org.kgromov.apifirst.model.PaymentMethodDto;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
@@ -10,19 +11,19 @@ import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
+@Profile("in-map")
 @Repository
-public class CustomerRepositoryImpl extends AbstractMapRepository<Customer, UUID> implements CustomerRepository {
+public class CustomerRepositoryImpl extends AbstractMapRepository<CustomerDto, UUID> implements CustomerRepository {
 
     @Override
-    public <S extends Customer> S save(S entity) {
+    public <S extends CustomerDto> S save(S entity) {
         UUID id = UUID.randomUUID();
 
-        Customer.CustomerBuilder builder1 = Customer.builder();
-
+        var builder1 = CustomerDto.builder();
         builder1.id(id);
 
         if (entity.getBillToAddress() != null){
-            builder1.billToAddress(Address.builder()
+            builder1.billToAddress(AddressDto.builder()
                     .id(UUID.randomUUID())
                     .addressLine1(entity.getBillToAddress().getAddressLine1())
                     .addressLine2(entity.getBillToAddress().getAddressLine2())
@@ -35,7 +36,7 @@ public class CustomerRepositoryImpl extends AbstractMapRepository<Customer, UUID
         }
 
         if (entity.getShipToAddress() != null) {
-            builder1.shipToAddress(Address.builder()
+            builder1.shipToAddress(AddressDto.builder()
                     .id(UUID.randomUUID())
                     .addressLine1(entity.getShipToAddress().getAddressLine1())
                     .addressLine2(entity.getShipToAddress().getAddressLine2())
@@ -50,7 +51,7 @@ public class CustomerRepositoryImpl extends AbstractMapRepository<Customer, UUID
         if (entity.getPaymentMethods() != null) {
             builder1.paymentMethods(entity.getPaymentMethods()
                     .stream()
-                    .map(paymentMethod -> PaymentMethod.builder()
+                    .map(paymentMethod -> PaymentMethodDto.builder()
                             .id(UUID.randomUUID())
                             .displayName(paymentMethod.getDisplayName())
                             .cardNumber(paymentMethod.getCardNumber())
@@ -63,7 +64,7 @@ public class CustomerRepositoryImpl extends AbstractMapRepository<Customer, UUID
                     .collect(toList()));
         }
 
-        Customer customer = builder1.email(entity.getEmail())
+        CustomerDto customer = builder1.email(entity.getEmail())
                 .name(entity.getName())
                 .phone(entity.getPhone())
                 .created(OffsetDateTime.now())
@@ -76,7 +77,7 @@ public class CustomerRepositoryImpl extends AbstractMapRepository<Customer, UUID
     }
 
     @Override
-    public void delete(Customer entity) {
+    public void delete(CustomerDto entity) {
         entityMap.remove(entity.getId());
     }
 }
