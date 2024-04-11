@@ -3,9 +3,9 @@ package org.kgromov.apifirst.server.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import org.junit.jupiter.api.BeforeEach;
-import org.kgromov.apifirst.model.Customer;
-import org.kgromov.apifirst.model.Order;
-import org.kgromov.apifirst.model.Product;
+import org.kgromov.apifirst.model.CustomerDto;
+import org.kgromov.apifirst.model.OrderDto;
+import org.kgromov.apifirst.model.ProductDto;
 import org.kgromov.apifirst.server.repositories.CustomerRepository;
 import org.kgromov.apifirst.server.repositories.OrderRepository;
 import org.kgromov.apifirst.server.repositories.ProductRepository;
@@ -23,9 +23,9 @@ public abstract class BaseE2ETest {
     @Autowired protected ObjectMapper objectMapper;
     public MockMvc mockMvc;
 
-    protected Customer testCustomer;
-    protected Product testProduct;
-    protected Order testOrder;
+    protected CustomerDto testCustomer;
+    protected ProductDto testProduct;
+    protected OrderDto testOrder;
 
     @BeforeEach
     void setUp() {

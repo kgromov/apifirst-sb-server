@@ -2,10 +2,10 @@ package org.kgromov.apifirst.server.controllers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.kgromov.apifirst.model.Category;
-import org.kgromov.apifirst.model.Dimensions;
-import org.kgromov.apifirst.model.Image;
-import org.kgromov.apifirst.model.Product;
+import org.kgromov.apifirst.model.CategoryDto;
+import org.kgromov.apifirst.model.DimensionsDto;
+import org.kgromov.apifirst.model.ImageDto;
+import org.kgromov.apifirst.model.ProductDto;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
@@ -24,19 +24,19 @@ class ProductControllerTest extends BaseE2ETest {
     @DisplayName("Test new product creation")
     @Test
     void createProduct() throws Exception {
-        Product newProduct = Product.builder()
-                .description("New Product")
+        ProductDto newProduct = ProductDto.builder()
+                .description("New ProductDto")
                 .cost("5.00")
                 .price("8.95")
-                .categories(List.of(Category.builder()
-                        .name("New Category")
-                        .description("New Category Description")
+                .categories(List.of(CategoryDto.builder()
+                        .name("New CategoryDto")
+                        .description("New CategoryDto Description")
                         .build()))
-                .images(List.of(Image.builder()
+                .images(List.of(ImageDto.builder()
                         .uri(URI.create("http://example.com/image.jpg"))
-                        .altText("Image Alt Text")
+                        .altText("ImageDto Alt Text")
                         .build()))
-                .dimensions(Dimensions.builder()
+                .dimensions(DimensionsDto.builder()
                         .length(10)
                         .width(10)
                         .height(10)

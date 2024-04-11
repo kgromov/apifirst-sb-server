@@ -1,7 +1,7 @@
 package org.kgromov.apifirst.server.services;
 
 import lombok.RequiredArgsConstructor;
-import org.kgromov.apifirst.model.Customer;
+import org.kgromov.apifirst.model.CustomerDto;
 import org.springframework.stereotype.Service;
 import org.kgromov.apifirst.server.repositories.CustomerRepository;
 
@@ -14,15 +14,15 @@ import java.util.stream.StreamSupport;
 public class CustomerService {
     private final CustomerRepository customerRepository;
 
-    public Customer createCustomer(Customer newCustomer) {
+    public CustomerDto createCustomer(CustomerDto newCustomer) {
         return customerRepository.save(newCustomer);
     }
 
-    public List<Customer> getCustomers() {
+    public List<CustomerDto> getCustomers() {
         return StreamSupport.stream(customerRepository.findAll().spliterator(), false).toList();
     }
 
-    public Customer getCustomer(UUID customerId) {
+    public CustomerDto getCustomer(UUID customerId) {
         return customerRepository.findById(customerId).orElseThrow();
     }
 }

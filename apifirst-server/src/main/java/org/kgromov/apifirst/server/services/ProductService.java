@@ -1,7 +1,7 @@
 package org.kgromov.apifirst.server.services;
 
 import lombok.RequiredArgsConstructor;
-import org.kgromov.apifirst.model.Product;
+import org.kgromov.apifirst.model.ProductDto;
 import org.kgromov.apifirst.server.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +14,15 @@ import java.util.stream.StreamSupport;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    public Product createProduct(Product newProduct) {
+    public ProductDto createProduct(ProductDto newProduct) {
         return productRepository.save(newProduct);
     }
 
-    public List<Product> getProducts() {
+    public List<ProductDto> getProducts() {
         return StreamSupport.stream(productRepository.findAll().spliterator(), false).toList();
     }
 
-    public Product getProductById(UUID productId) {
+    public ProductDto getProductById(UUID productId) {
         return productRepository.findById(productId).orElseThrow();
     }
 }

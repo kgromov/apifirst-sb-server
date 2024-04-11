@@ -1,22 +1,23 @@
 package org.kgromov.apifirst.server.repositories;
 
-import org.kgromov.apifirst.model.Category;
-import org.kgromov.apifirst.model.Dimensions;
-import org.kgromov.apifirst.model.Image;
-import org.kgromov.apifirst.model.Product;
+import org.kgromov.apifirst.model.CategoryDto;
+import org.kgromov.apifirst.model.DimensionsDto;
+import org.kgromov.apifirst.model.ImageDto;
+import org.kgromov.apifirst.model.ProductDto;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Profile("in-map")
 @Repository
-public class ProductRepositoryImpl extends AbstractMapRepository<Product, UUID> implements ProductRepository {
+public class ProductRepositoryImpl extends AbstractMapRepository<ProductDto, UUID> implements ProductRepository {
     
     @Override
-    public <S extends Product> S save(S entity) {
-        Product.ProductBuilder builder = Product.builder();
-
+    public <S extends ProductDto> S save(S entity) {
+        var builder = ProductDto.builder();
         builder.id(UUID.randomUUID())
                 .description(entity.getDescription())
                 .cost(entity.getCost())
@@ -27,7 +28,7 @@ public class ProductRepositoryImpl extends AbstractMapRepository<Product, UUID> 
         if (entity.getCategories() != null) {
             builder.categories(entity.getCategories().stream()
                     .map(category -> {
-                        return Category.builder()
+                        return CategoryDto.builder()
                                 .id(UUID.randomUUID())
                                 .name(category.getName())
                                 .description(category.getDescription())
@@ -41,7 +42,7 @@ public class ProductRepositoryImpl extends AbstractMapRepository<Product, UUID> 
         if (entity.getImages() != null) {
             builder.images(entity.getImages().stream()
                     .map(image -> {
-                        return Image.builder()
+                        return ImageDto.builder()
                                 .id(UUID.randomUUID())
                                 .uri(image.getUri())
                                 .altText(image.getAltText())
@@ -53,19 +54,19 @@ public class ProductRepositoryImpl extends AbstractMapRepository<Product, UUID> 
         }
 
         if (entity.getDimensions() != null) {
-            builder.dimensions(Dimensions.builder()
+            builder.dimensions(DimensionsDto.builder()
                     .length(entity.getDimensions().getLength())
                     .width(entity.getDimensions().getWidth())
                     .height(entity.getDimensions().getHeight())
                     .build());
         }
-        Product product = builder.build();
+        ProductDto product = builder.build();
         entityMap.put(product.getId(), product);
         return (S) product;
     }
 
     @Override
-    public void delete(Product entity) {
+    public void delete(ProductDto entity) {
         this.entityMap.remove(entity.getId());
     }
 }

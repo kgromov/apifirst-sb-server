@@ -19,10 +19,10 @@ public class OrderService {
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
 
-    public Order saveNewOrder(OrderCreate orderCreate) {
-        Customer orderCustomer = customerRepository.findById(orderCreate.getCustomerId()).orElseThrow();
-        var builder = Order.builder()
-                .customer(OrderCustomer.builder()
+    public OrderDto saveNewOrder(OrderCreateDto orderCreate) {
+        CustomerDto orderCustomer = customerRepository.findById(orderCreate.getCustomerId()).orElseThrow();
+        var builder = OrderDto.builder()
+                .customer(OrderCustomerDto.builder()
                         .id(orderCustomer.getId())
                         .name(orderCustomer.getName())
                         .billToAddress(orderCustomer.getBillToAddress())
@@ -33,14 +33,14 @@ public class OrderService {
                                         .equals(orderCreate.getSelectPaymentMethodId()))
                                 .findFirst().orElseThrow())
                         .build())
-                .orderStatus(Order.OrderStatusEnum.NEW);
+                .orderStatus(OrderDto.OrderStatusEnum.NEW);
 
-        List<OrderLine> orderLines = new ArrayList<>();
+        List<OrderLineDto> orderLines = new ArrayList<>();
         orderCreate.getOrderLines()
                 .forEach(orderLineCreate -> {
-                    Product product = productRepository.findById(orderLineCreate.getProductId()).orElseThrow();
-                    orderLines.add(OrderLine.builder()
-                            .product(OrderProduct.builder()
+                    ProductDto product = productRepository.findById(orderLineCreate.getProductId()).orElseThrow();
+                    orderLines.add(OrderLineDto.builder()
+                            .product(OrderProductDto.builder()
                                     .id(product.getId())
                                     .description(product.getDescription())
                                     .price(product.getPrice())
@@ -52,11 +52,11 @@ public class OrderService {
         return orderRepository.save(builder.orderLines(orderLines).build());
     }
 
-    public List<Order> getOrders() {
+    public List<OrderDto> getOrders() {
         return StreamSupport.stream(orderRepository.findAll().spliterator(), false).toList();
     }
 
-    public Order getOrderById(UUID orderId) {
+    public OrderDto getOrderById(UUID orderId) {
         return orderRepository.findById(orderId).orElseThrow();
     }
 }

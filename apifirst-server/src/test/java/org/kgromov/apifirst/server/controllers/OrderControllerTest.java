@@ -2,8 +2,8 @@ package org.kgromov.apifirst.server.controllers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.kgromov.apifirst.model.OrderCreate;
-import org.kgromov.apifirst.model.OrderLineCreate;
+import org.kgromov.apifirst.model.OrderCreateDto;
+import org.kgromov.apifirst.model.OrderLineCreateDto;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
@@ -21,10 +21,10 @@ class OrderControllerTest extends BaseE2ETest {
     @DisplayName("Test create new customer")
     @Test
     void createOrder() throws Exception {
-        OrderCreate orderCreate = OrderCreate.builder()
+        OrderCreateDto orderCreate = OrderCreateDto.builder()
                 .customerId(testCustomer.getId())
                 .selectPaymentMethodId(testCustomer.getPaymentMethods().getFirst().getId())
-                .orderLines(List.of(OrderLineCreate.builder()
+                .orderLines(List.of(OrderLineCreateDto.builder()
                         .productId(testProduct.getId())
                         .orderQuantity(1)
                         .build()))
