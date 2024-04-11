@@ -24,23 +24,20 @@ public class Customer {
     @Column(length = 36, columnDefinition = "char(36)", updatable = false, nullable = false)
     private UUID id;
 
-    @OneToOne
-    private Address shipToAddress;
-
-    @OneToOne
-    private Address billToAddress;
-
-    @Embedded
-    private Name name;
-
     private String email;
     private String phone;
-
-    @OneToMany(mappedBy = "customer")
-    private List<PaymentMethod> paymentMethods;
+    @Embedded
+    private Name name;
 
     @CreationTimestamp
     private OffsetDateTime created;
     @UpdateTimestamp
     private OffsetDateTime modified;
+
+    @OneToOne
+    private Address shipToAddress;
+    @OneToOne
+    private Address billToAddress;
+    @OneToMany(mappedBy = "customer")
+    private List<PaymentMethod> paymentMethods;
 }

@@ -26,10 +26,12 @@ public class Image {
 
     private URI uri;
     private String altText;
+
     @CreationTimestamp
     private OffsetDateTime created;
     @UpdateTimestamp
     private OffsetDateTime modified;
+
     @ManyToOne
     private Product product;
 }

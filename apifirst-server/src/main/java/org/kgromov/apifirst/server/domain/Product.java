@@ -28,14 +28,16 @@ public class Product {
     private String description;
     private String price;
     private String cost;
-    /*  @ManyToMany
-      private List<Category> categories;*/
     @Embedded
     private DimensionsDto dimensions;
-    @OneToMany(mappedBy = "product")
-    private List<Image> images;
+
     @CreationTimestamp
     private OffsetDateTime created;
     @UpdateTimestamp
     private OffsetDateTime modified;
+
+    @OneToMany(mappedBy = "product")
+    private List<Image> images;
+    @ManyToMany
+    private List<Category> categories;
 }

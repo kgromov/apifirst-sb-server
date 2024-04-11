@@ -9,31 +9,31 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Entity
-public class PaymentMethod {
+public class OrderLine {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @JdbcTypeCode(SqlTypes.CHAR)
     @Column(length = 36, columnDefinition = "char(36)", updatable = false, nullable = false)
     private UUID id;
 
-    private String displayName;
-    private Integer cardNumber;
-    private Integer expiryMonth;
-    private Integer expiryYear;
-    private Integer cvv;
+    private Integer orderQuantity;
+    private Integer shipQuantity;
 
     @CreationTimestamp
     private OffsetDateTime created;
-
     @UpdateTimestamp
     private OffsetDateTime modified;
 
     @ManyToOne
-    private Customer customer;
+    private Order order;
+    @ManyToOne
+    private Product product;
+
 }
