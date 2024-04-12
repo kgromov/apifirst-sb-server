@@ -1,9 +1,9 @@
 package org.kgromov.apifirst.server.repositories;
 
-import org.kgromov.apifirst.model.ProductDto;
-import org.springframework.data.repository.CrudRepository;
+import org.kgromov.apifirst.server.domain.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface ProductRepository extends CrudRepository<ProductDto, UUID> {
+public interface ProductRepository extends JpaRepository<Product, UUID> {
 }

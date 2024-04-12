@@ -14,7 +14,6 @@ import org.springframework.util.StopWatch;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -85,8 +84,8 @@ public class DataLoader implements CommandLineRunner {
                         .build()))
                 .build();
 
-        customerRepository.save(customer1);
-        customerRepository.save(customer2);
+     /*   customerRepository.save(customer1);
+        customerRepository.save(customer2);*/
         stopWatch.stop();
         var taskInfo = stopWatch.lastTaskInfo();
         log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTime(TimeUnit.MILLISECONDS));
@@ -133,8 +132,8 @@ public class DataLoader implements CommandLineRunner {
                         .build()))
                 .build();
 
-        productRepository.save(product1);
-        productRepository.save(product2);
+      /*  productRepository.save(product1);
+        productRepository.save(product2);*/
         stopWatch.stop();
         var taskInfo = stopWatch.lastTaskInfo();
         log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTime(TimeUnit.MILLISECONDS));
@@ -144,7 +143,7 @@ public class DataLoader implements CommandLineRunner {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("populateOrders");
 
-        List<CustomerDto> customers = StreamSupport.stream(customerRepository.findAll().spliterator(), false).toList();
+        /*List<CustomerDto> customers = StreamSupport.stream(customerRepository.findAll().spliterator(), false).toList();
         CustomerDto savedCustomer1 = customers.get(0);
         CustomerDto savedCustomer2 = customers.get(1);
 
@@ -215,7 +214,7 @@ public class DataLoader implements CommandLineRunner {
                 .build();
 
         orderRepository.save(order1);
-        orderRepository.save(order2);
+        orderRepository.save(order2);*/
         stopWatch.stop();
         var taskInfo = stopWatch.lastTaskInfo();
         log.info("Populate {} in {} ms", taskInfo.getTaskName(), taskInfo.getTime(TimeUnit.MILLISECONDS));

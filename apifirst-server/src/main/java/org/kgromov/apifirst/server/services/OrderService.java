@@ -1,16 +1,15 @@
 package org.kgromov.apifirst.server.services;
 
 import lombok.RequiredArgsConstructor;
-import org.kgromov.apifirst.model.*;
+import org.kgromov.apifirst.model.OrderCreateDto;
+import org.kgromov.apifirst.model.OrderDto;
 import org.kgromov.apifirst.server.repositories.CustomerRepository;
 import org.kgromov.apifirst.server.repositories.OrderRepository;
 import org.kgromov.apifirst.server.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +19,7 @@ public class OrderService {
     private final ProductRepository productRepository;
 
     public OrderDto saveNewOrder(OrderCreateDto orderCreate) {
-        CustomerDto orderCustomer = customerRepository.findById(orderCreate.getCustomerId()).orElseThrow();
+      /*  CustomerDto orderCustomer = customerRepository.findById(orderCreate.getCustomerId()).orElseThrow();
         var builder = OrderDto.builder()
                 .customer(OrderCustomerDto.builder()
                         .id(orderCustomer.getId())
@@ -49,14 +48,17 @@ public class OrderService {
                             .build());
                 });
 
-        return orderRepository.save(builder.orderLines(orderLines).build());
+        return orderRepository.save(builder.orderLines(orderLines).build());*/
+        return null;
     }
 
     public List<OrderDto> getOrders() {
-        return StreamSupport.stream(orderRepository.findAll().spliterator(), false).toList();
+//        return StreamSupport.stream(orderRepository.findAll().spliterator(), false).toList();
+        return null;
     }
 
     public OrderDto getOrderById(UUID orderId) {
-        return orderRepository.findById(orderId).orElseThrow();
+//        return orderRepository.findById(orderId).orElseThrow();
+        return null;
     }
 }
