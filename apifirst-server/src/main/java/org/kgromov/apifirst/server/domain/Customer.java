@@ -2,10 +2,12 @@ package org.kgromov.apifirst.server.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Delegate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
+import org.springframework.util.CollectionUtils;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -27,6 +29,7 @@ public class Customer {
     private String email;
     private String phone;
     @Embedded
+    @Delegate
     private Name name;
 
     @CreationTimestamp
@@ -34,10 +37,27 @@ public class Customer {
     @UpdateTimestamp
     private OffsetDateTime modified;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Address shipToAddress;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Address billToAddress;
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentMethod> paymentMethods;
+
+    public void setPaymentMethods(List<PaymentMethod> paymentMethods) {
+        this.paymentMethods = paymentMethods;
+        if (!CollectionUtils.isEmpty(this.paymentMethods)) {
+            paymentMethods.forEach(pm -> pm.setCustomer(this));
+        }
+    }
+
+    /*
+     * Alternative solution with hibernate lifecycle hook:
+     *  @PrePersist
+        public void prePersist() {
+            if (this.paymentMethods != null && !this.paymentMethods.isEmpty()) {
+                this.paymentMethods.forEach(paymentMethod -> paymentMethod.setCustomer(this));
+            }
+        }
+     */
 }
