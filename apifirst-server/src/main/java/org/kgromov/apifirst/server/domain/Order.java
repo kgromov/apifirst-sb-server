@@ -2,12 +2,10 @@ package org.kgromov.apifirst.server.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.experimental.Delegate;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Entity
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,10 +29,9 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.NEW;
 
-    @CreationTimestamp
-    private OffsetDateTime created;
-    @UpdateTimestamp
-    private OffsetDateTime modified;
+    @Delegate
+    @Embedded
+    private TimestampAudited timestampAudited;
 
     @ManyToOne
     private Customer customer;

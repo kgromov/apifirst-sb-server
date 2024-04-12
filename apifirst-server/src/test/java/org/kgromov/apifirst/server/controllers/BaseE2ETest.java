@@ -31,9 +31,9 @@ public abstract class BaseE2ETest {
     void setUp() {
         // workaround from https://bitbucket.org/atlassian/swagger-request-validator/issues/406/path-params-dont-work-with-openapi-version
         System.setProperty("bind-type", "true");
-        testCustomer = customerRepository.findAll().iterator().next();
+      /*  testCustomer = customerRepository.findAll().iterator().next();
         testProduct = productRepository.findAll().iterator().next();
-        testOrder = orderRepository.findAll().iterator().next();
+        testOrder = orderRepository.findAll().iterator().next();*/
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .addFilter(validationFilter)
                 .build();

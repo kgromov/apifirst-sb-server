@@ -2,12 +2,10 @@ package org.kgromov.apifirst.server.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.experimental.Delegate;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Getter
@@ -26,10 +24,9 @@ public class OrderLine {
     private Integer orderQuantity;
     private Integer shipQuantity;
 
-    @CreationTimestamp
-    private OffsetDateTime created;
-    @UpdateTimestamp
-    private OffsetDateTime modified;
+    @Delegate
+    @Embedded
+    private TimestampAudited timestampAudited;
 
     @ManyToOne
     private Order order;

@@ -2,13 +2,10 @@ package org.kgromov.apifirst.server.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.experimental.Delegate;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
-import org.kgromov.apifirst.model.DimensionsDto;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,13 +25,13 @@ public class Product {
     private String description;
     private String price;
     private String cost;
+    @Delegate
     @Embedded
-    private DimensionsDto dimensions;
+    private Dimensions dimensions;
 
-    @CreationTimestamp
-    private OffsetDateTime created;
-    @UpdateTimestamp
-    private OffsetDateTime modified;
+    @Delegate
+    @Embedded
+    private TimestampAudited timestampAudited;
 
     @OneToMany(mappedBy = "product")
     private List<Image> images;
