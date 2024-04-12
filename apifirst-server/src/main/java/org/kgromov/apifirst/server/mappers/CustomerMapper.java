@@ -7,10 +7,13 @@ import org.mapstruct.Mapping;
 
 @Mapper
 public interface CustomerMapper {
+
+    @Mapping(source = "timestampAudited.created", target = "created")
+    @Mapping(source = "timestampAudited.modified", target = "modified")
     CustomerDto customerToDto(Customer customer);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "created", ignore = true)
-    @Mapping(target = "modified", ignore = true)
+    @Mapping(target = "timestampAudited.created", ignore = true)
+    @Mapping(target = "timestampAudited.modified", ignore = true)
     Customer dtoToCustomer(CustomerDto customerDto);
 }

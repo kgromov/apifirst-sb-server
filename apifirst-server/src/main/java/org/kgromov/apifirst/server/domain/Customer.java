@@ -3,13 +3,10 @@ package org.kgromov.apifirst.server.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Delegate;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 import org.springframework.util.CollectionUtils;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,14 +25,13 @@ public class Customer {
 
     private String email;
     private String phone;
-    @Embedded
     @Delegate
+    @Embedded
     private Name name;
 
-    @CreationTimestamp
-    private OffsetDateTime created;
-    @UpdateTimestamp
-    private OffsetDateTime modified;
+    @Delegate
+    @Embedded
+    private TimestampAudited timestampAudited;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Address shipToAddress;

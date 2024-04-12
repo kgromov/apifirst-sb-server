@@ -43,7 +43,20 @@ class CustomerServiceTest {
         assertThat(paymentMethod.getCreated()).isNotNull();
         assertThat(paymentMethod.getModified()).isNotNull();
 
+        var billToAddress = customer.getBillToAddress();
+        assertThat(billToAddress.getId()).isNotNull();
+        assertThat(billToAddress.getCreated()).isNotNull();
+        assertThat(billToAddress.getModified()).isNotNull();
+
+        var shipToAddress = customer.getShipToAddress();
+        assertThat(shipToAddress.getId()).isNotNull();
+        assertThat(shipToAddress.getCreated()).isNotNull();
+        assertThat(shipToAddress.getModified()).isNotNull();
+
         assertThat(customer.getFirstName()).isEqualTo(customerDto.getName().getFirstName());
+        assertThat(customer.getLastName()).isEqualTo(customerDto.getName().getLastName());
+        assertThat(customer.getEmail()).isEqualTo(customerDto.getEmail());
+        assertThat(customer.getPhone()).isEqualTo(customerDto.getPhone());
     }
 
     @Transactional(readOnly = true)
