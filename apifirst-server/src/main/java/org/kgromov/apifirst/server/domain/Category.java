@@ -2,12 +2,10 @@ package org.kgromov.apifirst.server.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.experimental.Delegate;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,10 +23,12 @@ public class Category {
     private UUID id;
     private String name;
     private String description;
-    @CreationTimestamp
-    private OffsetDateTime created;
-    @UpdateTimestamp
-    private OffsetDateTime modified;
+    @Column(unique = true)
+    private String code;
+
+    @Delegate
+    @Embedded
+    private TimestampAudited timestampAudited;
 
     @ManyToMany(mappedBy = "categories")
     private List<Product> products;
