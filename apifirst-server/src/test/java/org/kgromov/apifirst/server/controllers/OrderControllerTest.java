@@ -6,6 +6,7 @@ import org.kgromov.apifirst.model.OrderCreateDto;
 import org.kgromov.apifirst.model.OrderLineCreateDto;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ class OrderControllerTest extends BaseE2ETest {
 
     @DisplayName("Test create new customer")
     @Test
+    @Transactional(readOnly = true)
     void createOrder() throws Exception {
         OrderCreateDto orderCreate = OrderCreateDto.builder()
                 .customerId(testCustomer.getId())

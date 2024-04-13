@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.Delegate;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,20 +39,10 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentMethod> paymentMethods;
 
-    public void setPaymentMethods(List<PaymentMethod> paymentMethods) {
-        this.paymentMethods = paymentMethods;
-        if (!CollectionUtils.isEmpty(this.paymentMethods)) {
-            paymentMethods.forEach(pm -> pm.setCustomer(this));
+    @PrePersist
+    public void prePersist() {
+        if (this.paymentMethods != null && !this.paymentMethods.isEmpty()) {
+            this.paymentMethods.forEach(paymentMethod -> paymentMethod.setCustomer(this));
         }
     }
-
-    /*
-     * Alternative solution with hibernate lifecycle hook:
-     *  @PrePersist
-        public void prePersist() {
-            if (this.paymentMethods != null && !this.paymentMethods.isEmpty()) {
-                this.paymentMethods.forEach(paymentMethod -> paymentMethod.setCustomer(this));
-            }
-        }
-     */
 }

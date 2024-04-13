@@ -2,6 +2,9 @@ package org.kgromov.apifirst.server.controllers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.kgromov.apifirst.model.AddressDto;
+import org.kgromov.apifirst.model.CustomerDto;
+import org.kgromov.apifirst.model.NameDto;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
@@ -17,9 +20,10 @@ class CustomerControllerTest extends BaseE2ETest {
     @DisplayName("Test new customer creation")
     @Test
     void createCustomer() throws Exception {
+        CustomerDto customerDto = this.createCustomerDto();
         mockMvc.perform(post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testCustomer))
+                        .content(objectMapper.writeValueAsString(customerDto))
                 )
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("Location"));
@@ -41,5 +45,35 @@ class CustomerControllerTest extends BaseE2ETest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(testCustomer.getId().toString()));
+    }
+
+    private CustomerDto createCustomerDto() {
+        return CustomerDto.builder()
+                .name(NameDto.builder()
+                        .lastName("Doe")
+                        .firstName("John")
+                        .build())
+                .phone("555-555-5555")
+                .email("john@example.com")
+                .shipToAddress(AddressDto.builder()
+                        .addressLine1("123 Main St")
+                        .city("Denver")
+                        .state("CO")
+                        .zip("80216")
+                        .build())
+                .billToAddress(AddressDto.builder()
+                        .addressLine1("123 Main St")
+                        .city("Denver")
+                        .state("CO")
+                        .zip("80216")
+                        .build())
+              /*  .paymentMethods(List.of(PaymentMethodDto.builder()
+                        .displayName("My Other Card")
+                        .cardNumber(1234888)
+                        .expiryMonth(12)
+                        .expiryYear(26)
+                        .cvv(456)
+                        .build()))*/
+                .build();
     }
 }

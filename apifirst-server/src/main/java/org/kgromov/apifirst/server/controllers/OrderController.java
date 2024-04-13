@@ -21,8 +21,8 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<Void> saveNewOrder(@RequestBody OrderCreateDto orderCreate){
-        OrderDto savedOrder = orderService.saveNewOrder(orderCreate);
+    public ResponseEntity<Void> createOrder(@RequestBody OrderCreateDto orderCreate){
+        OrderDto savedOrder = orderService.createOrder(orderCreate);
         return ResponseEntity.created(URI.create(BASE_URL + "/" + savedOrder.getId())).build();
     }
 

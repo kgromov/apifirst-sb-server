@@ -35,7 +35,9 @@ public class Order {
 
     @ManyToOne
     private Customer customer;
+    @ManyToOne
+    private PaymentMethod selectedPaymentMethod;
     @Builder.Default
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLine> orderLines = new ArrayList<>();
 }

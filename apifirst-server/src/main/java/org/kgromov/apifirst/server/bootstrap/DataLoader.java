@@ -10,6 +10,7 @@ import org.kgromov.apifirst.server.repositories.OrderRepository;
 import org.kgromov.apifirst.server.repositories.ProductRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 
 import java.net.URI;
@@ -30,6 +31,7 @@ public class DataLoader implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Transactional
     public void run(String... args) {
         this.populateCategories();
         this.populateCustomersData();
@@ -156,41 +158,43 @@ public class DataLoader implements CommandLineRunner {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("populateOrders");
 
-        List<Customer> customers = customerRepository.findAll();
-        Customer savedCustomer1 = customers.get(0);
-        Customer savedCustomer2 = customers.get(1);
+        var customers = customerRepository.findAll();
+        Customer customer1 = customers.get(0);
+        Customer customer2 = customers.get(1);
 
-        List<Product> products = productRepository.findAll();
-        Product savedProduct1 = products.get(0);
-        Product savedProduct2 = products.get(1);
+        var products = productRepository.findAll();
+        Product product1 = products.get(0);
+        Product product2 = products.get(1);
 
         Order order1 = Order.builder()
-                .customer(savedCustomer1)
+                .customer(customer1)
+                .selectedPaymentMethod(customer1.getPaymentMethods().getFirst())
                 .orderStatus(OrderStatus.NEW)
                 .shipmentInfo("shipment info")
                 .orderLines(List.of(OrderLine.builder()
-                                .product(savedProduct1)
+                                .product(product1)
                                 .orderQuantity(1)
                                 .shipQuantity(1)
                                 .build(),
                         OrderLine.builder()
-                                .product(savedProduct1)
+                                .product(product1)
                                 .orderQuantity(1)
                                 .shipQuantity(1)
                                 .build()))
                 .build();
 
         Order order2 = Order.builder()
-                .customer(savedCustomer2)
+                .customer(customer2)
+                .selectedPaymentMethod(customer2.getPaymentMethods().getFirst())
                 .orderStatus(OrderStatus.NEW)
                 .shipmentInfo("shipment info #2")
                 .orderLines(List.of(OrderLine.builder()
-                                .product(savedProduct2)
+                                .product(product2)
                                 .orderQuantity(1)
                                 .shipQuantity(1)
                                 .build(),
                         OrderLine.builder()
-                                .product(savedProduct2)
+                                .product(product2)
                                 .orderQuantity(1)
                                 .shipQuantity(1)
                                 .build()))
