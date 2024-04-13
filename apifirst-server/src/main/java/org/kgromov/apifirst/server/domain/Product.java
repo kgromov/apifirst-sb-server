@@ -33,7 +33,7 @@ public class Product {
     @Embedded
     private TimestampAudited timestampAudited;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
     @ManyToMany
     private List<Category> categories;

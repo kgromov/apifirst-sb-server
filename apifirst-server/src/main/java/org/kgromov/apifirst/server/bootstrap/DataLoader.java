@@ -13,8 +13,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,23 +40,15 @@ public class DataLoader implements CommandLineRunner {
     private void populateCategories() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("populateCategories");
-        Category electronics = categoryRepository.save(Category.builder()
-                .name("Electronics")
-                .description("Electronics")
-                .code("ELECTRONICS")
-                .build());
-
-        Category clothing = categoryRepository.save(Category.builder()
-                .name("Clothing")
-                .description("Clothing")
-                .code("CLOTHING")
-                .build());
-
-        Category dryGoods = categoryRepository.save(Category.builder()
-                .name("Dry Goods")
-                .description("Dry Goods")
-                .code("DRYGOODS")
-                .build());
+        var categories = Arrays.stream(CategoryCode.values())
+                .map(code -> Category.builder()
+                        .code(code.name())
+                        .name(code.getName())
+                        .description(code.getName())
+                        .build()
+                )
+                .collect(toSet());
+        categoryRepository.saveAll(categories);
         stopWatchAndLog(stopWatch);
     }
 

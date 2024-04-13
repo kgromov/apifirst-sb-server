@@ -2,10 +2,8 @@ package org.kgromov.apifirst.server.controllers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.kgromov.apifirst.model.CategoryDto;
-import org.kgromov.apifirst.model.DimensionsDto;
-import org.kgromov.apifirst.model.ImageDto;
-import org.kgromov.apifirst.model.ProductDto;
+import org.kgromov.apifirst.model.*;
+import org.kgromov.apifirst.server.domain.CategoryCode;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
@@ -24,14 +22,11 @@ class ProductControllerTest extends BaseE2ETest {
     @DisplayName("Test new product creation")
     @Test
     void createProduct() throws Exception {
-        ProductDto newProduct = ProductDto.builder()
+        var newProduct = ProductCreateDto.builder()
                 .description("New ProductDto")
                 .cost("5.00")
                 .price("8.95")
-                .categories(List.of(CategoryDto.builder()
-                        .name("New CategoryDto")
-                        .description("New CategoryDto Description")
-                        .build()))
+                .categories(List.of(CategoryCode.ELECTRONICS.name()))
                 .images(List.of(ImageDto.builder()
                         .uri(URI.create("http://example.com/image.jpg"))
                         .altText("ImageDto Alt Text")

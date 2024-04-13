@@ -1,11 +1,11 @@
 package org.kgromov.apifirst.server.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.kgromov.apifirst.model.ProductCreateDto;
 import org.kgromov.apifirst.model.ProductDto;
 import org.kgromov.apifirst.server.services.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -22,8 +22,8 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<Void> createProduct(@RequestBody ProductDto product){
-        ProductDto savedProduct = productService.createProduct(product);
+    public ResponseEntity<Void> createProduct(@RequestBody ProductCreateDto createDto){
+        ProductDto savedProduct = productService.createProduct(createDto);
         var uriComponents = UriComponentsBuilder.fromPath(BASE_URL + "/{productId}")
                 .buildAndExpand(savedProduct.getId());
         return ResponseEntity.created(URI.create(uriComponents.getPath())).build();
