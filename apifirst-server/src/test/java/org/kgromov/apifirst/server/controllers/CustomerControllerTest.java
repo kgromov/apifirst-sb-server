@@ -5,8 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.kgromov.apifirst.model.AddressDto;
 import org.kgromov.apifirst.model.CustomerDto;
 import org.kgromov.apifirst.model.NameDto;
+import org.kgromov.apifirst.model.PaymentMethodDto;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.kgromov.apifirst.server.controllers.CustomerController.BASE_URL;
@@ -67,13 +70,13 @@ class CustomerControllerTest extends BaseE2ETest {
                         .state("CO")
                         .zip("80216")
                         .build())
-              /*  .paymentMethods(List.of(PaymentMethodDto.builder()
+                .paymentMethods(List.of(PaymentMethodDto.builder()
                         .displayName("My Other Card")
                         .cardNumber(1234888)
                         .expiryMonth(12)
                         .expiryYear(26)
                         .cvv(456)
-                        .build()))*/
+                        .build()))
                 .build();
     }
 }
