@@ -1,6 +1,8 @@
 package org.kgromov.apifirst.server.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.Delegate;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -20,10 +22,18 @@ public class Address {
     @JdbcTypeCode(SqlTypes.CHAR)
     @Column(length = 36, columnDefinition = "char(36)", updatable = false, nullable = false)
     private UUID id;
+    @NotNull
+    @Size(min = 2, max = 100)
     private String addressLine1;
+    @Size(min = 2, max = 100)
     private String addressLine2;
+    @Size(min = 2, max = 100)
     private String city;
+    @NotNull
+    @Size(min = 2, max = 2)
     private String state;
+    @NotNull
+    @Size(min = 5, max = 6)
     private String zip;
 
     @Delegate

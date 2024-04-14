@@ -1,6 +1,8 @@
 package org.kgromov.apifirst.server.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.Delegate;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -21,11 +23,12 @@ public class Customer {
     @JdbcTypeCode(SqlTypes.CHAR)
     @Column(length = 36, columnDefinition = "char(36)", updatable = false, nullable = false)
     private UUID id;
-
+    @Email
     private String email;
     private String phone;
     @Delegate
     @Embedded
+    @NotNull
     private Name name;
 
     @Delegate
@@ -33,7 +36,9 @@ public class Customer {
     private TimestampAudited timestampAudited;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @NotNull
     private Address shipToAddress;
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     private Address billToAddress;
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)

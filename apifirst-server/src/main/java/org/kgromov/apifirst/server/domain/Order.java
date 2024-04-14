@@ -1,6 +1,8 @@
 package org.kgromov.apifirst.server.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.Delegate;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -23,10 +25,11 @@ public class Order {
     @JdbcTypeCode(SqlTypes.CHAR)
     @Column(length = 36, columnDefinition = "char(36)", updatable = false, nullable = false)
     private UUID id;
-
+    @Size(min = 1, max = 255)
     private String shipmentInfo;
     @Builder.Default
     @Enumerated(EnumType.STRING)
+    @NotNull
     private OrderStatus orderStatus = OrderStatus.NEW;
 
     @Delegate
@@ -34,10 +37,16 @@ public class Order {
     private TimestampAudited timestampAudited;
 
     @ManyToOne
+    @NotNull
     private Customer customer;
     @ManyToOne
     private PaymentMethod selectedPaymentMethod;
+    @NotNull
     @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLine> orderLines = new ArrayList<>();
+    @PrePersist
+    public void prePersist() {
+        this.orderLines.forEach(paymentMethod -> paymentMethod.setOrder(this));
+    }
 }

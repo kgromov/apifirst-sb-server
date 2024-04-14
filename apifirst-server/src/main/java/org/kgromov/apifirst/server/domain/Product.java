@@ -1,6 +1,9 @@
 package org.kgromov.apifirst.server.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.Delegate;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -21,9 +24,13 @@ public class Product {
     @JdbcTypeCode(SqlTypes.CHAR)
     @Column(length = 36, columnDefinition = "char(36)", updatable = false, nullable = false)
     private UUID id;
-
+    @NotNull
+    @Size(min = 5, max = 255)
     private String description;
+    @NotNull
+    @Pattern(regexp="^-?(?:0|[1-9]\\d{0,2}(?:,?\\d{3})*)(?:\\.\\d+)?$")
     private String price;
+    @Pattern(regexp="^-?(?:0|[1-9]\\d{0,2}(?:,?\\d{3})*)(?:\\.\\d+)?$")
     private String cost;
     @Delegate
     @Embedded

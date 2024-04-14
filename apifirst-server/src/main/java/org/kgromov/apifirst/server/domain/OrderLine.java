@@ -1,6 +1,9 @@
 package org.kgromov.apifirst.server.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.Delegate;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -20,8 +23,12 @@ public class OrderLine {
     @JdbcTypeCode(SqlTypes.CHAR)
     @Column(length = 36, columnDefinition = "char(36)", updatable = false, nullable = false)
     private UUID id;
-
+    @NotNull
+    @Min(1)
+    @Max(9999)
     private Integer orderQuantity;
+    @Min(1)
+    @Max(9999)
     private Integer shipQuantity;
 
     @Delegate
@@ -30,6 +37,7 @@ public class OrderLine {
 
     @ManyToOne
     private Order order;
+    @NotNull
     @ManyToOne
     private Product product;
 
