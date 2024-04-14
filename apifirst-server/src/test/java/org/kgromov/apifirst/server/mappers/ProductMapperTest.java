@@ -39,7 +39,7 @@ class ProductMapperTest {
         assertEquals(productCreateDto.getDimensions().getHeight(), product.getHeight());
         assertEquals(productCreateDto.getDimensions().getWidth(), product.getWidth());
         assertEquals(productCreateDto.getDimensions().getLength(), product.getLength());
-        assertEquals(productCreateDto.getImages().getFirst().getUri(), product.getImages().getFirst().getUri());
+        assertEquals(productCreateDto.getImages().getFirst().getUri().toString(), product.getImages().getFirst().getUri());
         assertEquals(productCreateDto.getImages().getFirst().getAltText(), product.getImages().getFirst().getAltText());
         assertEquals(productCreateDto.getCategories().getFirst(), product.getCategories().getFirst().getCode());
 
@@ -52,7 +52,7 @@ class ProductMapperTest {
                 .price("1.0")
                 .description("description")
                 .images(List.of(ImageDto.builder()
-                        .uri("http://example.com/image.jpg")
+                        .uri(URI.create("http://example.com/image.jpg"))
                         .altText("Image Alt Text")
                         .build()))
                 .categories(List.of(cat))

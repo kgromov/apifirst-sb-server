@@ -44,4 +44,11 @@ public class Product {
     private List<Image> images;
     @ManyToMany
     private List<Category> categories;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.images != null && !this.images.isEmpty()) {
+            this.images.forEach(image -> image.setProduct(this));
+        }
+    }
 }
