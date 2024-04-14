@@ -52,7 +52,7 @@ class ProductMapperTest {
                 .price("1.0")
                 .description("description")
                 .images(List.of(ImageDto.builder()
-                        .uri(URI.create("http://example.com/image.jpg"))
+                        .uri("http://example.com/image.jpg")
                         .altText("Image Alt Text")
                         .build()))
                 .categories(List.of(cat))

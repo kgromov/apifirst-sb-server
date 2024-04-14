@@ -28,7 +28,7 @@ class ProductControllerTest extends BaseE2ETest {
                 .price("8.95")
                 .categories(List.of(CategoryCode.ELECTRONICS.name()))
                 .images(List.of(ImageDto.builder()
-                        .uri(URI.create("http://example.com/image.jpg"))
+                        .uri("http://example.com/image.jpg")
                         .altText("ImageDto Alt Text")
                         .build()))
                 .dimensions(DimensionsDto.builder()

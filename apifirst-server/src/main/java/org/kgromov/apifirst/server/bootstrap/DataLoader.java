@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -128,7 +127,7 @@ public class DataLoader implements CommandLineRunner {
                         .width(3)
                         .build())
                 .images(List.of(Image.builder()
-                        .uri(URI.create("http://example.com/image1"))
+                        .uri("http://example.com/image1")
                         .altText("Image 1")
                         .build()))
                 .build();
@@ -144,7 +143,7 @@ public class DataLoader implements CommandLineRunner {
                         .width(3)
                         .build())
                 .images(List.of(Image.builder()
-                        .uri(URI.create("http://example.com/image2"))
+                        .uri("http://example.com/image2")
                         .altText("Image 2")
                         .build()))
                 .build();

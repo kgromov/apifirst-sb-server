@@ -2,12 +2,12 @@ package org.kgromov.apifirst.server.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.Delegate;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.net.URI;
 import java.util.UUID;
 
 @Getter
@@ -23,8 +23,8 @@ public class Image {
     @Column(length = 36, columnDefinition = "char(36)", updatable = false, nullable = false)
     private UUID id;
     @NotNull
-//    @Size(min = 10, max = 511)
-    private URI uri;
+    @Size(min = 10, max = 511)
+    private String uri;
     private String altText;
 
     @Delegate
