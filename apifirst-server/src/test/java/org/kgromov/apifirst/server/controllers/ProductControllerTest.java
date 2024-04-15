@@ -2,22 +2,28 @@ package org.kgromov.apifirst.server.controllers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.kgromov.apifirst.model.*;
+import org.kgromov.apifirst.model.DimensionsDto;
+import org.kgromov.apifirst.model.ImageDto;
+import org.kgromov.apifirst.model.ProductCreateDto;
+import org.kgromov.apifirst.model.ProductUpdateDto;
 import org.kgromov.apifirst.server.domain.CategoryCode;
+import org.kgromov.apifirst.server.domain.Product;
+import org.kgromov.apifirst.server.mappers.ProductMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URI;
 import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.kgromov.apifirst.server.controllers.ProductController.BASE_URL;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 class ProductControllerTest extends BaseE2ETest {
+    @Autowired private ProductMapper productMapper;
 
     @DisplayName("Test new product creation")
     @Test
@@ -63,5 +69,21 @@ class ProductControllerTest extends BaseE2ETest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(testProduct.getId().toString()));
+    }
+
+
+    @DisplayName("Test update product by id")
+    @Transactional
+    @Test
+    void testUpdateProduct() throws Exception {
+        Product product = productRepository.findAll().getFirst();
+        ProductUpdateDto productUpdateDto = productMapper.productToUpdateDto(product);
+        productUpdateDto.setDescription("Updated Description");
+
+        mockMvc.perform(put(BASE_URL + "/{productId}", product.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productUpdateDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.description").value("Updated Description"));
     }
 }

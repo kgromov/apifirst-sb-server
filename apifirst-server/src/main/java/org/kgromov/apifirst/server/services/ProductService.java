@@ -3,6 +3,7 @@ package org.kgromov.apifirst.server.services;
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.ProductCreateDto;
 import org.kgromov.apifirst.model.ProductDto;
+import org.kgromov.apifirst.model.ProductUpdateDto;
 import org.kgromov.apifirst.server.mappers.ProductMapper;
 import org.kgromov.apifirst.server.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,14 @@ import java.util.UUID;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+
+    @Transactional
+    public ProductDto updateProduct(UUID productId, ProductUpdateDto product) {
+        var productToUpdate = productRepository.findById(productId).orElseThrow();
+        productMapper.updateProduct(product, productToUpdate);
+        var updatedProduct = productRepository.saveAndFlush(productToUpdate);
+        return productMapper.productToDto(updatedProduct);
+    }
 
     @Transactional
     public ProductDto createProduct(ProductCreateDto createDto) {
