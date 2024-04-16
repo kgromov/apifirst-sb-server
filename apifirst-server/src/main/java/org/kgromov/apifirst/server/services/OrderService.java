@@ -3,6 +3,7 @@ package org.kgromov.apifirst.server.services;
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.OrderCreateDto;
 import org.kgromov.apifirst.model.OrderDto;
+import org.kgromov.apifirst.model.OrderUpdateDto;
 import org.kgromov.apifirst.server.domain.Order;
 import org.kgromov.apifirst.server.mappers.OrderMapper;
 import org.kgromov.apifirst.server.repositories.OrderRepository;
@@ -37,5 +38,13 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .map(orderMapper::orderToDto)
                 .orElseThrow();
+    }
+
+    @Transactional
+    public OrderDto updateOrder(UUID orderId, OrderUpdateDto orderUpdateDto) {
+        var existingOrder = orderRepository.findById(orderId).orElseThrow();
+        orderMapper.updateOrder(orderUpdateDto, existingOrder);
+        var savedOrder = orderRepository.saveAndFlush(existingOrder);
+        return orderMapper.orderToDto(savedOrder);
     }
 }
