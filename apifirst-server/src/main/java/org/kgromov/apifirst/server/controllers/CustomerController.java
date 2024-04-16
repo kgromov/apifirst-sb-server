@@ -2,7 +2,6 @@ package org.kgromov.apifirst.server.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.CustomerDto;
-import org.kgromov.apifirst.model.ProductDto;
 import org.kgromov.apifirst.server.services.CustomerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +34,12 @@ public class CustomerController {
     @GetMapping("/{id}")
     ResponseEntity<CustomerDto> getCustomerById(@PathVariable UUID id) {
         return ResponseEntity.ok(customerService.getCustomer(id));
+    }
+
+    @PutMapping("/{customerId}")
+    ResponseEntity<CustomerDto> getCustomerById(@PathVariable UUID customerId,
+                                                @RequestBody CustomerDto updateDtp) {
+        CustomerDto udpatedCustomer = customerService.updateCustomer(customerId, updateDtp);
+        return ResponseEntity.ok(udpatedCustomer);
     }
 }

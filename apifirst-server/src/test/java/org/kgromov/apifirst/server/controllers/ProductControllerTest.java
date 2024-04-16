@@ -7,7 +7,6 @@ import org.kgromov.apifirst.model.ImageDto;
 import org.kgromov.apifirst.model.ProductCreateDto;
 import org.kgromov.apifirst.model.ProductUpdateDto;
 import org.kgromov.apifirst.server.domain.CategoryCode;
-import org.kgromov.apifirst.server.domain.Product;
 import org.kgromov.apifirst.server.mappers.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -71,16 +70,15 @@ class ProductControllerTest extends BaseE2ETest {
                 .andExpect(jsonPath("$.id").value(testProduct.getId().toString()));
     }
 
-
+    // TODO: test more complex scenario with nested entity update
     @DisplayName("Test update product by id")
     @Transactional
     @Test
-    void testUpdateProduct() throws Exception {
-        Product product = productRepository.findAll().getFirst();
-        ProductUpdateDto productUpdateDto = productMapper.productToUpdateDto(product);
+    void updateProduct() throws Exception {
+        ProductUpdateDto productUpdateDto = productMapper.productToUpdateDto(testProduct);
         productUpdateDto.setDescription("Updated Description");
 
-        mockMvc.perform(put(BASE_URL + "/{productId}", product.getId())
+        mockMvc.perform(put(BASE_URL + "/{productId}", testProduct.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productUpdateDto)))
                 .andExpect(status().isOk())

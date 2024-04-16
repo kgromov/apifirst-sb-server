@@ -4,6 +4,7 @@ import org.kgromov.apifirst.model.CustomerDto;
 import org.kgromov.apifirst.server.domain.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper
 public interface CustomerMapper {
@@ -16,4 +17,9 @@ public interface CustomerMapper {
     @Mapping(target = "timestampAudited.created", ignore = true)
     @Mapping(target = "timestampAudited.modified", ignore = true)
     Customer dtoToCustomer(CustomerDto customerDto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "timestampAudited.created", ignore = true)
+    @Mapping(target = "timestampAudited.modified", ignore = true)
+    void updateCustomer(CustomerDto updateDto, @MappingTarget Customer customer);
 }
