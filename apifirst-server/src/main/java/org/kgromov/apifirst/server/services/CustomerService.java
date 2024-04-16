@@ -35,4 +35,12 @@ public class CustomerService {
                 .map(customerMapper::customerToDto)
                 .orElseThrow();
     }
+
+    @Transactional
+    public CustomerDto updateCustomer(UUID customerId, CustomerDto updateDtp) {
+        var customerToUpdate = customerRepository.findById(customerId).orElseThrow();
+        customerMapper.updateCustomer(updateDtp, customerToUpdate);
+        var updatedCustomer = customerRepository.saveAndFlush(customerToUpdate);
+        return customerMapper.customerToDto(updatedCustomer);
+    }
 }

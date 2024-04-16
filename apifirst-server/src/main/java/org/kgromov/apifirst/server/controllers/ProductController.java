@@ -41,10 +41,10 @@ public class ProductController {
     }
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable UUID id,
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable UUID productId,
                                                     @RequestBody ProductUpdateDto updateDto){
-        ProductDto savedProduct = productService.updateProduct(id, updateDto);
+        ProductDto savedProduct = productService.updateProduct(productId, updateDto);
         return ResponseEntity.ok(savedProduct);
     }
 }

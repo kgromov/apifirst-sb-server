@@ -6,19 +6,22 @@ import org.kgromov.apifirst.model.AddressDto;
 import org.kgromov.apifirst.model.CustomerDto;
 import org.kgromov.apifirst.model.NameDto;
 import org.kgromov.apifirst.model.PaymentMethodDto;
+import org.kgromov.apifirst.server.mappers.CustomerMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.kgromov.apifirst.server.controllers.CustomerController.BASE_URL;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 class CustomerControllerTest extends BaseE2ETest {
+    @Autowired private CustomerMapper customerMapper;
 
     @DisplayName("Test new customer creation")
     @Test
@@ -48,6 +51,22 @@ class CustomerControllerTest extends BaseE2ETest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(testCustomer.getId().toString()));
+    }
+
+    @DisplayName("Test update customer")
+    @Transactional
+    @Test
+    void updateCustomer() throws Exception{
+        CustomerDto customerDto = customerMapper.customerToDto(testCustomer);
+        customerDto.setPhone("444-222-333");
+        customerDto.setEmail("my@test.com");
+
+        mockMvc.perform(put(BASE_URL + "/{customerId}", testCustomer.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customerDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.phone").value(customerDto.getPhone()))
+                .andExpect(jsonPath("$.email").value(customerDto.getEmail()));
     }
 
     private CustomerDto createCustomerDto() {
