@@ -2,6 +2,8 @@ package org.kgromov.apifirst.server.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.CustomerDto;
+import org.kgromov.apifirst.server.ResourceNotFoundException;
+import org.kgromov.apifirst.server.repositories.CustomerRepository;
 import org.kgromov.apifirst.server.services.CustomerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<Void> createProduct(@RequestBody CustomerDto customer){
+    public ResponseEntity<Void> createProduct(@RequestBody CustomerDto customer) {
         CustomerDto createdCustomer = customerService.createCustomer(customer);
         var uriComponents = UriComponentsBuilder.fromPath(BASE_URL + "/{customerId}")
                 .buildAndExpand(createdCustomer.getId());
@@ -31,15 +33,21 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getCustomers());
     }
 
-    @GetMapping("/{id}")
-    ResponseEntity<CustomerDto> getCustomerById(@PathVariable UUID id) {
-        return ResponseEntity.ok(customerService.getCustomer(id));
+    @GetMapping("/{customerId}")
+    ResponseEntity<CustomerDto> getCustomerById(@PathVariable UUID customerId) {
+        return ResponseEntity.ok(customerService.getCustomer(customerId));
     }
 
     @PutMapping("/{customerId}")
     ResponseEntity<CustomerDto> getCustomerById(@PathVariable UUID customerId,
                                                 @RequestBody CustomerDto updateDtp) {
-        CustomerDto udpatedCustomer = customerService.updateCustomer(customerId, updateDtp);
-        return ResponseEntity.ok(udpatedCustomer);
+        CustomerDto updatedCustomer = customerService.updateCustomer(customerId, updateDtp);
+        return ResponseEntity.ok(updatedCustomer);
+    }
+
+    @DeleteMapping("/{customerId}")
+    ResponseEntity<Void> deleteCustomer(@PathVariable UUID customerId) {
+        customerService.deleteCustomer(customerId);
+        return ResponseEntity.noContent().build();
     }
 }

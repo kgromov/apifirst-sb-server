@@ -6,6 +6,7 @@ import org.kgromov.apifirst.model.OrderCreateDto;
 import org.kgromov.apifirst.model.OrderDto;
 import org.kgromov.apifirst.model.OrderLineCreateDto;
 import org.kgromov.apifirst.model.OrderUpdateDto;
+import org.kgromov.apifirst.server.domain.Order;
 import org.kgromov.apifirst.server.mappers.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -63,6 +65,19 @@ class OrderControllerTest extends BaseE2ETest {
                 .andExpect(jsonPath("$.id").value(testOrder.getId().toString()));
     }
 
+    @DisplayName("Test delete order")
+    @Test
+    @Transactional
+    void deleteOrder() throws Exception {
+        OrderCreateDto dto = createNewOrderDto();
+        Order savedOrder = orderRepository.save(orderMapper.dtoToOrder(dto));
+
+        mockMvc.perform(delete(BASE_URL + "/{orderId}", savedOrder.getId()))
+                .andExpect(status().isNoContent());
+
+        assert orderRepository.findById(savedOrder.getId()).isEmpty();
+    }
+
     @DisplayName("Test update order")
     @Test
     @Transactional
@@ -81,5 +96,23 @@ class OrderControllerTest extends BaseE2ETest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(testOrder.getId().toString()));
                 .andExpect(jsonPath("$.orderLines[0].orderQuantity").value(222));*/
+    }
+
+    @DisplayName("Test delete order that does not exist by id")
+    @Test
+    void deleteOrderNotFound() throws Exception {
+        mockMvc.perform(delete(BASE_URL + "/{orderId}", UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
+    private OrderCreateDto createNewOrderDto() {
+        return OrderCreateDto.builder()
+                .customerId(testCustomer.getId())
+                .selectPaymentMethodId(testCustomer.getPaymentMethods().getFirst().getId())
+                .orderLines(List.of(OrderLineCreateDto.builder()
+                        .productId(testProduct.getId())
+                        .orderQuantity(1)
+                        .build()))
+                .build();
     }
 }

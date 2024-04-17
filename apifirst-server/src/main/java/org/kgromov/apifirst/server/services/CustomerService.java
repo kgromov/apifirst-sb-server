@@ -2,6 +2,7 @@ package org.kgromov.apifirst.server.services;
 
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.CustomerDto;
+import org.kgromov.apifirst.server.ResourceNotFoundException;
 import org.kgromov.apifirst.server.domain.Customer;
 import org.kgromov.apifirst.server.mappers.CustomerMapper;
 import org.kgromov.apifirst.server.repositories.CustomerRepository;
@@ -42,5 +43,14 @@ public class CustomerService {
         customerMapper.updateCustomer(updateDtp, customerToUpdate);
         var updatedCustomer = customerRepository.saveAndFlush(customerToUpdate);
         return customerMapper.customerToDto(updatedCustomer);
+    }
+
+    @Transactional
+    public void deleteCustomer(UUID customerId) {
+        customerRepository.findById(customerId).ifPresentOrElse(
+                customerRepository::delete,
+                () -> {
+                    throw new ResourceNotFoundException("Customer not found");
+                });
     }
 }
