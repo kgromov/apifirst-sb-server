@@ -43,4 +43,10 @@ public class OrderController {
         OrderDto savedOrder = orderService.updateOrder(orderId, orderUpdateDto);
         return ResponseEntity.ok(savedOrder);
     }
+
+    @DeleteMapping("/{orderId}")
+    ResponseEntity<Void> deleteOrder(@PathVariable UUID orderId) {
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.noContent().build();
+    }
 }

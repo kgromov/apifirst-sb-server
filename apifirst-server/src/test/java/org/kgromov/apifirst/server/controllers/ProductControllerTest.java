@@ -6,7 +6,7 @@ import org.kgromov.apifirst.model.DimensionsDto;
 import org.kgromov.apifirst.model.ImageDto;
 import org.kgromov.apifirst.model.ProductCreateDto;
 import org.kgromov.apifirst.model.ProductUpdateDto;
-import org.kgromov.apifirst.server.domain.CategoryCode;
+import org.kgromov.apifirst.server.domain.Product;
 import org.kgromov.apifirst.server.mappers.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,15 +14,19 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.kgromov.apifirst.server.controllers.ProductController.BASE_URL;
+import static org.kgromov.apifirst.server.domain.CategoryCode.ELECTRONICS;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 class ProductControllerTest extends BaseE2ETest {
-    @Autowired private ProductMapper productMapper;
+    @Autowired
+    private ProductMapper productMapper;
 
     @DisplayName("Test new product creation")
     @Test
@@ -31,7 +35,7 @@ class ProductControllerTest extends BaseE2ETest {
                 .description("New ProductDto")
                 .cost("5.00")
                 .price("8.95")
-                .categories(List.of(CategoryCode.ELECTRONICS.name()))
+                .categories(List.of(ELECTRONICS.name()))
                 .images(List.of(ImageDto.builder()
                         .uri("http://example.com/image.jpg")
                         .altText("ImageDto Alt Text")
@@ -83,5 +87,43 @@ class ProductControllerTest extends BaseE2ETest {
                         .content(objectMapper.writeValueAsString(productUpdateDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.description").value("Updated Description"));
+    }
+
+    @DisplayName("Test delete product")
+    @Test
+    void deleteProduct() throws Exception {
+        ProductCreateDto newProduct = createTestProductCreateDto();
+        Product savedProduct = productRepository.save(productMapper.dtoToProduct(newProduct));
+
+        mockMvc.perform(delete(BASE_URL + "/{productId}", savedProduct.getId()))
+                .andExpect(status().isNoContent());
+
+        assertThat(productRepository.findById(savedProduct.getId())).isEmpty();
+    }
+
+
+    @DisplayName("Test delete product that does not exist by id")
+    @Test
+    void deleteOrderNotFound() throws Exception {
+        mockMvc.perform(delete(BASE_URL + "/{productId}", UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
+    private ProductCreateDto createTestProductCreateDto() {
+        return ProductCreateDto.builder()
+                .description("New Product")
+                .cost("5.00")
+                .price("8.95")
+                .categories(List.of(ELECTRONICS.name()))
+                .images(List.of(ImageDto.builder()
+                        .uri("http://example.com/image.jpg")
+                        .altText("Image Alt Text")
+                        .build()))
+                .dimensions(DimensionsDto.builder()
+                        .length(10)
+                        .width(10)
+                        .height(10)
+                        .build())
+                .build();
     }
 }

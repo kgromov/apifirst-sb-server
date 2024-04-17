@@ -6,6 +6,7 @@ import org.kgromov.apifirst.model.AddressDto;
 import org.kgromov.apifirst.model.CustomerDto;
 import org.kgromov.apifirst.model.NameDto;
 import org.kgromov.apifirst.model.PaymentMethodDto;
+import org.kgromov.apifirst.server.domain.Customer;
 import org.kgromov.apifirst.server.mappers.CustomerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.kgromov.apifirst.server.controllers.CustomerController.BASE_URL;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -67,6 +70,25 @@ class CustomerControllerTest extends BaseE2ETest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.phone").value(customerDto.getPhone()))
                 .andExpect(jsonPath("$.email").value(customerDto.getEmail()));
+    }
+
+    @DisplayName("Test delete customer")
+    @Test
+    void deleteCustomer() throws Exception {
+        CustomerDto customer = this.createCustomerDto();
+        Customer savedCustomer = customerRepository.saveAndFlush(customerMapper.dtoToCustomer(customer));
+
+        mockMvc.perform(delete(BASE_URL + "/{customerId}", savedCustomer.getId()))
+                .andExpect(status().isNoContent());
+
+        assertThat(customerRepository.findById(savedCustomer.getId())).isEmpty();
+    }
+
+    @DisplayName("Test delete customer but random UUID")
+    @Test
+    void deleteCustomerNotFound() throws Exception {
+        mockMvc.perform(delete(BASE_URL + "/{customerId}", UUID.randomUUID()))
+                .andExpect(status().isNotFound());
     }
 
     private CustomerDto createCustomerDto() {

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.OrderCreateDto;
 import org.kgromov.apifirst.model.OrderDto;
 import org.kgromov.apifirst.model.OrderUpdateDto;
+import org.kgromov.apifirst.server.ResourceNotFoundException;
 import org.kgromov.apifirst.server.domain.Order;
 import org.kgromov.apifirst.server.mappers.OrderMapper;
 import org.kgromov.apifirst.server.repositories.OrderRepository;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+
 
     @Transactional
     public OrderDto createOrder(OrderCreateDto orderCreateDto) {
@@ -46,5 +48,14 @@ public class OrderService {
         orderMapper.updateOrder(orderUpdateDto, existingOrder);
         var savedOrder = orderRepository.saveAndFlush(existingOrder);
         return orderMapper.orderToDto(savedOrder);
+    }
+
+    @Transactional
+    public void deleteOrder(UUID orderId) {
+        orderRepository.findById(orderId).ifPresentOrElse(
+                orderRepository::delete,
+                () -> {
+                    throw new ResourceNotFoundException("Order not found");
+                });
     }
 }

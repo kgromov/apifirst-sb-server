@@ -23,7 +23,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<Void> createProduct(@RequestBody ProductCreateDto createDto){
+    public ResponseEntity<Void> createProduct(@RequestBody ProductCreateDto createDto) {
         ProductDto savedProduct = productService.createProduct(createDto);
         var uriComponents = UriComponentsBuilder.fromPath(BASE_URL + "/{productId}")
                 .buildAndExpand(savedProduct.getId());
@@ -35,16 +35,22 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProducts());
     }
 
-    @GetMapping("/{id}")
-    ResponseEntity<ProductDto> getProductById(@PathVariable UUID id) {
-        return ResponseEntity.ok(productService.getProductById(id));
+    @GetMapping("/{productId}")
+    ResponseEntity<ProductDto> getProductById(@PathVariable UUID productId) {
+        return ResponseEntity.ok(productService.getProductById(productId));
     }
 
 
     @PutMapping("/{productId}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable UUID productId,
-                                                    @RequestBody ProductUpdateDto updateDto){
+                                                    @RequestBody ProductUpdateDto updateDto) {
         ProductDto savedProduct = productService.updateProduct(productId, updateDto);
         return ResponseEntity.ok(savedProduct);
+    }
+
+    @DeleteMapping("/{productId}")
+    ResponseEntity<Void> deleteProduct(@PathVariable UUID productId) {
+        productService.deleteProduct(productId);
+        return ResponseEntity.noContent().build();
     }
 }

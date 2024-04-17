@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.ProductCreateDto;
 import org.kgromov.apifirst.model.ProductDto;
 import org.kgromov.apifirst.model.ProductUpdateDto;
+import org.kgromov.apifirst.server.ResourceNotFoundException;
 import org.kgromov.apifirst.server.mappers.ProductMapper;
 import org.kgromov.apifirst.server.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -45,5 +46,13 @@ public class ProductService {
         return productRepository.findById(productId)
                 .map(productMapper::productToDto)
                 .orElseThrow();
+    }
+
+    public void deleteProduct(UUID productId) {
+        productRepository.findById(productId).ifPresentOrElse(
+                productRepository::delete,
+                () -> {
+                    throw new ResourceNotFoundException("Product not found");
+                });
     }
 }
