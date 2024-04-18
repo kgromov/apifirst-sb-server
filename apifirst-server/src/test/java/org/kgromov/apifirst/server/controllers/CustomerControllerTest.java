@@ -56,6 +56,15 @@ class CustomerControllerTest extends BaseE2ETest {
                 .andExpect(jsonPath("$.id").value(testCustomer.getId().toString()));
     }
 
+    @DisplayName("Test get existed customer by id")
+    @Test
+    void getProductById() throws Exception {
+        mockMvc.perform(get(OrderController.BASE_URL + "/{customerId}", UUID.randomUUID())
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isNotFound());
+    }
+
     @DisplayName("Test update customer")
     @Transactional
     @Test

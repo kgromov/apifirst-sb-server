@@ -74,6 +74,16 @@ class ProductControllerTest extends BaseE2ETest {
                 .andExpect(jsonPath("$.id").value(testProduct.getId().toString()));
     }
 
+    @DisplayName("Test get product not existed by id")
+    @Test
+    void getProductByIdNotFound() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/{productId}", UUID.randomUUID())
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isNotFound());
+    }
+
+
     // TODO: test more complex scenario with nested entity update
     @DisplayName("Test update product by id")
     @Transactional

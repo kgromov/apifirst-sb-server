@@ -1,4 +1,4 @@
-package org.kgromov.apifirst.server;
+package org.kgromov.apifirst.server.exceptions;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
 

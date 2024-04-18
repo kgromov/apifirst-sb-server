@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.ProductCreateDto;
 import org.kgromov.apifirst.model.ProductDto;
 import org.kgromov.apifirst.model.ProductUpdateDto;
-import org.kgromov.apifirst.server.ResourceNotFoundException;
+import org.kgromov.apifirst.server.exceptions.ResourceNotFoundException;
 import org.kgromov.apifirst.server.mappers.ProductMapper;
 import org.kgromov.apifirst.server.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class ProductService {
 
     @Transactional
     public ProductDto updateProduct(UUID productId, ProductUpdateDto product) {
-        var productToUpdate = productRepository.findById(productId).orElseThrow();
+        var productToUpdate = productRepository.findById(productId).orElseThrow(ResourceNotFoundException::new);
         productMapper.updateProduct(product, productToUpdate);
         var updatedProduct = productRepository.saveAndFlush(productToUpdate);
         return productMapper.productToDto(updatedProduct);
@@ -45,7 +45,7 @@ public class ProductService {
     public ProductDto getProductById(UUID productId) {
         return productRepository.findById(productId)
                 .map(productMapper::productToDto)
-                .orElseThrow();
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     public void deleteProduct(UUID productId) {

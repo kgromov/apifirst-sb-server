@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class OrderControllerTest extends BaseE2ETest {
     @Autowired private OrderMapper orderMapper;
 
-    @DisplayName("Test create new customer")
+    @DisplayName("Test create new order")
     @Test
     @Transactional(readOnly = true)
     void createOrder() throws Exception {
@@ -47,7 +47,7 @@ class OrderControllerTest extends BaseE2ETest {
     }
 
 
-    @DisplayName("Test get all products")
+    @DisplayName("Test get all orders")
     @Test
     void getOrders() throws Exception {
         mockMvc.perform(get(BASE_URL)
@@ -56,13 +56,22 @@ class OrderControllerTest extends BaseE2ETest {
                 .andExpect(jsonPath("$.size()", greaterThan(0)));
     }
 
-    @DisplayName("Test get existed product by id")
+    @DisplayName("Test get existed order by id")
     @Test
     void getOrderById() throws Exception {
         mockMvc.perform(get(BASE_URL + "/{orderId}", testOrder.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(testOrder.getId().toString()));
+    }
+
+    @DisplayName("Test get existed order by id")
+    @Test
+    void getProductById() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/{orderId}", UUID.randomUUID())
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isNotFound());
     }
 
     @DisplayName("Test delete order")

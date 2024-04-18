@@ -2,8 +2,6 @@ package org.kgromov.apifirst.server.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.CustomerDto;
-import org.kgromov.apifirst.server.ResourceNotFoundException;
-import org.kgromov.apifirst.server.repositories.CustomerRepository;
 import org.kgromov.apifirst.server.services.CustomerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
