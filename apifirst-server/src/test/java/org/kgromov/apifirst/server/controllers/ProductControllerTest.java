@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static com.atlassian.oai.validator.mockmvc.OpenApiValidationMatchers.openApi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.kgromov.apifirst.server.controllers.ProductController.BASE_URL;
@@ -122,13 +123,20 @@ class ProductControllerTest extends BaseE2ETest {
 
         assertThat(productRepository.findById(savedProduct.getId())).isEmpty();
     }
-
-
+    
     @DisplayName("Test delete product that does not exist by id")
     @Test
     void deleteOrderNotFound() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/{productId}", UUID.randomUUID()))
                 .andExpect(status().isNotFound());
+    }
+
+    @DisplayName("Test delete product that associated with orders")
+    @Test
+    void deleteOrderConflictProductWithOrders() throws Exception {
+        mockMvc.perform(delete(BASE_URL + "/{productId}", testProduct.getId()))
+                .andExpect(status().isConflict())
+                .andExpect(openApi().isValid(openApiUrl));
     }
 
     private ProductCreateDto createTestProductCreateDto() {

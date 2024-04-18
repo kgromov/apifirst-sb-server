@@ -10,6 +10,7 @@ import org.kgromov.apifirst.server.repositories.CustomerRepository;
 import org.kgromov.apifirst.server.repositories.OrderRepository;
 import org.kgromov.apifirst.server.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -21,6 +22,8 @@ public abstract class BaseE2ETest {
     @Autowired protected WebApplicationContext wac;
     @Autowired protected Filter validationFilter;
     @Autowired protected ObjectMapper objectMapper;
+    @Value("${openapi.docs.uri}")
+    protected String openApiUrl;
     public MockMvc mockMvc;
 
     protected Customer testCustomer;
