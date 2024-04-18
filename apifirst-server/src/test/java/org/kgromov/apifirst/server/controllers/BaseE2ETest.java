@@ -1,7 +1,6 @@
 package org.kgromov.apifirst.server.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.Filter;
 import org.junit.jupiter.api.BeforeEach;
 import org.kgromov.apifirst.server.domain.Customer;
 import org.kgromov.apifirst.server.domain.Order;
@@ -20,7 +19,6 @@ public abstract class BaseE2ETest {
     @Autowired protected ProductRepository productRepository;
     @Autowired protected OrderRepository orderRepository;
     @Autowired protected WebApplicationContext wac;
-    @Autowired protected Filter validationFilter;
     @Autowired protected ObjectMapper objectMapper;
     @Value("${openapi.docs.uri}")
     protected String openApiUrl;
@@ -38,7 +36,6 @@ public abstract class BaseE2ETest {
         testProduct = productRepository.findAll().getFirst();
         testOrder = orderRepository.findAll().getFirst();
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
-                .addFilter(validationFilter)
                 .build();
     }
 }

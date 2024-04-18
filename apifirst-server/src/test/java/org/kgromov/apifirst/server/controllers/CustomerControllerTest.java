@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.atlassian.oai.validator.mockmvc.OpenApiValidationMatchers.openApi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.kgromov.apifirst.server.controllers.CustomerController.BASE_URL;
@@ -37,6 +38,7 @@ class CustomerControllerTest extends BaseE2ETest {
                         .content(objectMapper.writeValueAsString(customerDto))
                 )
                 .andExpect(status().isCreated())
+                .andExpect(openApi().isValid(openApiUrl))
                 .andExpect(header().exists("Location"));
     }
 
@@ -46,6 +48,7 @@ class CustomerControllerTest extends BaseE2ETest {
         mockMvc.perform(get(BASE_URL)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(openApi().isValid(openApiUrl))
                 .andExpect(jsonPath("$.size()", greaterThan(0)));
     }
 
@@ -55,6 +58,7 @@ class CustomerControllerTest extends BaseE2ETest {
         mockMvc.perform(get(BASE_URL + "/{customerId}", testCustomer.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(openApi().isValid(openApiUrl))
                 .andExpect(jsonPath("$.id").value(testCustomer.getId().toString()));
     }
 
@@ -64,7 +68,8 @@ class CustomerControllerTest extends BaseE2ETest {
         mockMvc.perform(get(OrderController.BASE_URL + "/{customerId}", UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                 .andExpect(openApi().isValid(openApiUrl));
     }
 
     @DisplayName("Test update customer")
@@ -79,6 +84,7 @@ class CustomerControllerTest extends BaseE2ETest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerDto)))
                 .andExpect(status().isOk())
+                .andExpect(openApi().isValid(openApiUrl))
                 .andExpect(jsonPath("$.phone").value(customerDto.getPhone()))
                 .andExpect(jsonPath("$.email").value(customerDto.getEmail()));
     }
@@ -93,7 +99,8 @@ class CustomerControllerTest extends BaseE2ETest {
         mockMvc.perform(put(BASE_URL + "/{customerId}", UUID.randomUUID())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerDto)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(openApi().isValid(openApiUrl));
     }
 
     @DisplayName("Test delete customer")
@@ -103,7 +110,8 @@ class CustomerControllerTest extends BaseE2ETest {
         Customer savedCustomer = customerRepository.saveAndFlush(customerMapper.dtoToCustomer(customer));
 
         mockMvc.perform(delete(BASE_URL + "/{customerId}", savedCustomer.getId()))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent())
+                .andExpect(openApi().isValid(openApiUrl));
 
         assertThat(customerRepository.findById(savedCustomer.getId())).isEmpty();
     }
@@ -112,14 +120,16 @@ class CustomerControllerTest extends BaseE2ETest {
     @Test
     void deleteCustomerNotFound() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/{customerId}", UUID.randomUUID()))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(openApi().isValid(openApiUrl));
     }
 
     @DisplayName("Test delete customer with payment methods")
     @Test
     void deleteCustomerConflict() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/{customerId}", testCustomer.getId()))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(openApi().isValid(openApiUrl));
     }
 
     @Disabled
@@ -134,7 +144,8 @@ class CustomerControllerTest extends BaseE2ETest {
         Customer savedCustomer = customerRepository.saveAndFlush(testCustomer);
 
         mockMvc.perform(delete(BASE_URL + "/{customerId}", savedCustomer.getId()))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(openApi().isValid(openApiUrl));
     }
 
     private CustomerDto createCustomerDto() {

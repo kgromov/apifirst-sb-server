@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static com.atlassian.oai.validator.mockmvc.OpenApiValidationMatchers.openApi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.kgromov.apifirst.server.controllers.OrderController.BASE_URL;
@@ -43,6 +44,7 @@ class OrderControllerTest extends BaseE2ETest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderCreate)))
                 .andExpect(status().isCreated())
+                .andExpect(openApi().isValid(openApiUrl))
                 .andExpect(header().exists("Location"));
     }
 
@@ -53,6 +55,7 @@ class OrderControllerTest extends BaseE2ETest {
         mockMvc.perform(get(BASE_URL)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(openApi().isValid(openApiUrl))
                 .andExpect(jsonPath("$.size()", greaterThan(0)));
     }
 
@@ -62,6 +65,7 @@ class OrderControllerTest extends BaseE2ETest {
         mockMvc.perform(get(BASE_URL + "/{orderId}", testOrder.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(openApi().isValid(openApiUrl))
                 .andExpect(jsonPath("$.id").value(testOrder.getId().toString()));
     }
 
@@ -71,7 +75,8 @@ class OrderControllerTest extends BaseE2ETest {
         mockMvc.perform(get(BASE_URL + "/{orderId}", UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(openApi().isValid(openApiUrl));
     }
 
     @DisplayName("Test delete order")
@@ -82,7 +87,8 @@ class OrderControllerTest extends BaseE2ETest {
         Order savedOrder = orderRepository.save(orderMapper.dtoToOrder(dto));
 
         mockMvc.perform(delete(BASE_URL + "/{orderId}", savedOrder.getId()))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent())
+                .andExpect(openApi().isValid(openApiUrl));
 
         assert orderRepository.findById(savedOrder.getId()).isEmpty();
     }
@@ -91,7 +97,8 @@ class OrderControllerTest extends BaseE2ETest {
     @Test
     void deleteOrderNotFound() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/{orderId}", UUID.randomUUID()))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(openApi().isValid(openApiUrl));
     }
 
     @DisplayName("Test update order")
@@ -104,7 +111,9 @@ class OrderControllerTest extends BaseE2ETest {
         ResultActions perform = mockMvc.perform(put(BASE_URL + "/{orderId}", testOrder.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(orderUpdate))
-                .accept(MediaType.APPLICATION_JSON));
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(openApi().isValid(openApiUrl));
         OrderDto updatedOrder = objectMapper.reader().readValue(perform.andReturn().getResponse().getContentAsString(), OrderDto.class);
         assertThat(updatedOrder.getId()).isEqualTo(testOrder.getId());
         assertThat(updatedOrder.getOrderLines().getFirst().getOrderQuantity()).isEqualTo(222);
@@ -124,7 +133,8 @@ class OrderControllerTest extends BaseE2ETest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(orderUpdate))
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(openApi().isValid(openApiUrl));
     }
 
     private OrderCreateDto createNewOrderDto() {

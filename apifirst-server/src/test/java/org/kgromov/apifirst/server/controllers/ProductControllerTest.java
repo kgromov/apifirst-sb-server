@@ -52,6 +52,7 @@ class ProductControllerTest extends BaseE2ETest {
                         .content(objectMapper.writeValueAsString(newProduct))
                 )
                 .andExpect(status().isCreated())
+                .andExpect(openApi().isValid(openApiUrl))
                 .andExpect(header().exists("Location"));
     }
 
@@ -62,6 +63,7 @@ class ProductControllerTest extends BaseE2ETest {
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
+                .andExpect(openApi().isValid(openApiUrl))
                 .andExpect(jsonPath("$.size()", greaterThan(0)));
     }
 
@@ -72,6 +74,7 @@ class ProductControllerTest extends BaseE2ETest {
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
+                .andExpect(openApi().isValid(openApiUrl))
                 .andExpect(jsonPath("$.id").value(testProduct.getId().toString()));
     }
 
@@ -81,7 +84,8 @@ class ProductControllerTest extends BaseE2ETest {
         mockMvc.perform(get(BASE_URL + "/{productId}", UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(openApi().isValid(openApiUrl));
     }
 
     // TODO: test more complex scenario with nested entity update
@@ -96,6 +100,7 @@ class ProductControllerTest extends BaseE2ETest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productUpdateDto)))
                 .andExpect(status().isOk())
+                .andExpect(openApi().isValid(openApiUrl))
                 .andExpect(jsonPath("$.description").value("Updated Description"));
     }
 
@@ -109,7 +114,8 @@ class ProductControllerTest extends BaseE2ETest {
         mockMvc.perform(put(BASE_URL + "/{productId}", UUID.randomUUID())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productUpdateDto)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(openApi().isValid(openApiUrl));
     }
 
     @DisplayName("Test delete product")
@@ -119,16 +125,18 @@ class ProductControllerTest extends BaseE2ETest {
         Product savedProduct = productRepository.save(productMapper.dtoToProduct(newProduct));
 
         mockMvc.perform(delete(BASE_URL + "/{productId}", savedProduct.getId()))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent())
+                .andExpect(openApi().isValid(openApiUrl));
 
         assertThat(productRepository.findById(savedProduct.getId())).isEmpty();
     }
-    
+
     @DisplayName("Test delete product that does not exist by id")
     @Test
     void deleteOrderNotFound() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/{productId}", UUID.randomUUID()))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(openApi().isValid(openApiUrl));
     }
 
     @DisplayName("Test delete product that associated with orders")
