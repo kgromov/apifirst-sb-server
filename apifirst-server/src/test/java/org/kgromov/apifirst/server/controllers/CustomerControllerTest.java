@@ -58,7 +58,7 @@ class CustomerControllerTest extends BaseE2ETest {
 
     @DisplayName("Test get existed customer by id")
     @Test
-    void getProductById() throws Exception {
+    void getCustomerByIdNotFound() throws Exception {
         mockMvc.perform(get(OrderController.BASE_URL + "/{customerId}", UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON)
                 )
@@ -79,6 +79,19 @@ class CustomerControllerTest extends BaseE2ETest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.phone").value(customerDto.getPhone()))
                 .andExpect(jsonPath("$.email").value(customerDto.getEmail()));
+    }
+
+    @DisplayName("Test update customer that does not exist by id")
+    @Transactional
+    @Test
+    void updateCustomerNotFound() throws Exception{
+        CustomerDto customerDto = customerMapper.customerToDto(testCustomer);
+        customerDto.setPhone("444-222-333");
+
+        mockMvc.perform(put(BASE_URL + "/{customerId}", UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customerDto)))
+                .andExpect(status().isNotFound());
     }
 
     @DisplayName("Test delete customer")

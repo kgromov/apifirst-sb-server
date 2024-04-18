@@ -67,7 +67,7 @@ class OrderControllerTest extends BaseE2ETest {
 
     @DisplayName("Test get existed order by id")
     @Test
-    void getProductById() throws Exception {
+    void getOrderByIdNotFound() throws Exception {
         mockMvc.perform(get(BASE_URL + "/{orderId}", UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON)
                 )
@@ -85,6 +85,13 @@ class OrderControllerTest extends BaseE2ETest {
                 .andExpect(status().isNoContent());
 
         assert orderRepository.findById(savedOrder.getId()).isEmpty();
+    }
+
+    @DisplayName("Test delete order that does not exist by id")
+    @Test
+    void deleteOrderNotFound() throws Exception {
+        mockMvc.perform(delete(BASE_URL + "/{orderId}", UUID.randomUUID()))
+                .andExpect(status().isNotFound());
     }
 
     @DisplayName("Test update order")
@@ -107,10 +114,16 @@ class OrderControllerTest extends BaseE2ETest {
                 .andExpect(jsonPath("$.orderLines[0].orderQuantity").value(222));*/
     }
 
-    @DisplayName("Test delete order that does not exist by id")
+    @DisplayName("Test update order that does not exist by id")
     @Test
-    void deleteOrderNotFound() throws Exception {
-        mockMvc.perform(delete(BASE_URL + "/{orderId}", UUID.randomUUID()))
+    @Transactional
+    void updateOrderNotFound() throws Exception {
+        OrderUpdateDto orderUpdate = orderMapper.orderToUpdateDto(testOrder);
+
+        mockMvc.perform(put(BASE_URL + "/{orderId}", UUID.randomUUID())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(orderUpdate))
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 

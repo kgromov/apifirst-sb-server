@@ -83,7 +83,6 @@ class ProductControllerTest extends BaseE2ETest {
                 .andExpect(status().isNotFound());
     }
 
-
     // TODO: test more complex scenario with nested entity update
     @DisplayName("Test update product by id")
     @Transactional
@@ -97,6 +96,19 @@ class ProductControllerTest extends BaseE2ETest {
                         .content(objectMapper.writeValueAsString(productUpdateDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.description").value("Updated Description"));
+    }
+
+    @DisplayName("Test update product not existing by id")
+    @Transactional
+    @Test
+    void updateProductNotFound() throws Exception {
+        ProductUpdateDto productUpdateDto = productMapper.productToUpdateDto(testProduct);
+        productUpdateDto.setDescription("Updated Description");
+
+        mockMvc.perform(put(BASE_URL + "/{productId}", UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productUpdateDto)))
+                .andExpect(status().isNotFound());
     }
 
     @DisplayName("Test delete product")
