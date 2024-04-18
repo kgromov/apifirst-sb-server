@@ -1,5 +1,6 @@
 package org.kgromov.apifirst.server.controllers;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.kgromov.apifirst.model.AddressDto;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -111,6 +113,28 @@ class CustomerControllerTest extends BaseE2ETest {
     void deleteCustomerNotFound() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/{customerId}", UUID.randomUUID()))
                 .andExpect(status().isNotFound());
+    }
+
+    @DisplayName("Test delete customer with payment methods")
+    @Test
+    void deleteCustomerConflict() throws Exception {
+        mockMvc.perform(delete(BASE_URL + "/{customerId}", testCustomer.getId()))
+                .andExpect(status().isConflict());
+    }
+
+    @Disabled
+    @DisplayName("Test delete customer with orders")
+    @Transactional
+    @Test
+    void deleteCustomerConflictWithOrder() throws Exception {
+      /*  CustomerDto customerDto = customerMapper.customerToDto(testCustomer);
+        customerDto.setPaymentMethods(emptyList());
+        Customer customer = customerMapper.dtoToCustomer(customerDto);*/
+        testCustomer.setPaymentMethods(new ArrayList<>());
+        Customer savedCustomer = customerRepository.saveAndFlush(testCustomer);
+
+        mockMvc.perform(delete(BASE_URL + "/{customerId}", savedCustomer.getId()))
+                .andExpect(status().isConflict());
     }
 
     private CustomerDto createCustomerDto() {

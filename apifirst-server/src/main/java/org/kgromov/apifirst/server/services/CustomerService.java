@@ -2,10 +2,12 @@ package org.kgromov.apifirst.server.services;
 
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.CustomerDto;
-import org.kgromov.apifirst.server.exceptions.ResourceNotFoundException;
 import org.kgromov.apifirst.server.domain.Customer;
+import org.kgromov.apifirst.server.exceptions.ConflictException;
+import org.kgromov.apifirst.server.exceptions.ResourceNotFoundException;
 import org.kgromov.apifirst.server.mappers.CustomerMapper;
 import org.kgromov.apifirst.server.repositories.CustomerRepository;
+import org.kgromov.apifirst.server.repositories.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ import java.util.UUID;
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
+    private final OrderRepository orderRepository;
 
     @Transactional
     public CustomerDto createCustomer(CustomerDto customerDto) {
@@ -47,8 +50,12 @@ public class CustomerService {
 
     @Transactional
     public void deleteCustomer(UUID customerId) {
-        customerRepository.findById(customerId).ifPresentOrElse(
-                customerRepository::delete,
+        customerRepository.findById(customerId).ifPresentOrElse(customer -> {
+                    if (orderRepository.existsByCustomer(customer)) {
+                        throw new ConflictException("Can't delete customer cause there are exist associated orders");
+                    }
+                    customerRepository.delete(customer);
+                },
                 () -> {
                     throw new ResourceNotFoundException("Customer not found");
                 });
