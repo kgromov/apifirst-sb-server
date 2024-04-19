@@ -22,6 +22,7 @@ public class CategoryController {
 
     @GetMapping
     ResponseEntity<List<CategoryDto>> getCategories() {
+//        throw new DataIntegrityViolationException("boom!!");
         return ResponseEntity.ok(categoryService.getCategories());
     }
 }

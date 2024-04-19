@@ -42,6 +42,21 @@ class CustomerControllerTest extends BaseE2ETest {
                 .andExpect(header().exists("Location"));
     }
 
+    @DisplayName("Test new create customer bad request")
+    @Test
+    void createCustomerBadRequest() throws Exception {
+        CustomerDto customerDto = this.createCustomerDto();
+        customerDto.setName(null);
+        customerDto.setPhone("abc");
+        customerDto.getBillToAddress().setZip("1");
+
+        mockMvc.perform(post(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customerDto))
+                )
+                .andExpect(status().isBadRequest());
+    }
+
     @DisplayName("Test get all customers")
     @Test
     void getCustomers() throws Exception {

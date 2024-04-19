@@ -1,28 +1,18 @@
 package org.kgromov.apifirst.server.exceptions;
 
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.zalando.problem.AbstractThrowableProblem;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
-@ResponseStatus(value = NOT_FOUND, reason = "Resource Not Found")
-public class ResourceNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends AbstractThrowableProblem {
 
     public ResourceNotFoundException() {
+        this("Requested Entity Not Found");
     }
 
     public ResourceNotFoundException(String message) {
-        super(message);
+        this(message, null);
     }
 
-    public ResourceNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ResourceNotFoundException(Throwable cause) {
-        super(cause);
-    }
-
-    public ResourceNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public ResourceNotFoundException(String message, String detail) {
+        super(null, message, org.zalando.problem.Status.NOT_FOUND, detail);
     }
 }
