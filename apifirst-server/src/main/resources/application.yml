@@ -1,3 +1,7 @@
 openapi:
   docs:
     uri: "https://api.redocly.com/registry/bundle/kgromov/API%20First%20-%20Spring%20Boot%20-%20Development/v1/openapi.yaml?branch=development"
+
+logging:
+  level:
+    org.zalando.logbook: trace
