@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.zalando.logbook.Logbook;
+import org.zalando.logbook.servlet.LogbookFilter;
 
 public abstract class BaseE2ETest {
     @Autowired protected CustomerRepository customerRepository;
@@ -36,6 +38,7 @@ public abstract class BaseE2ETest {
         testProduct = productRepository.findAll().getFirst();
         testOrder = orderRepository.findAll().getFirst();
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
+                .addFilters(new LogbookFilter(Logbook.create()))
                 .build();
     }
 }
