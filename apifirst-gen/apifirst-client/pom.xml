@@ -34,15 +34,14 @@
                         </goals>
                         <configuration>
                             <skip>false</skip>
-<!--                            <library>resttemplate</library>-->
-<!--                            <library>webclient</library>-->
                             <generateApis>true</generateApis>
                             <generateModels>false</generateModels>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <apiPackage>org.kgromov.apifirst.client</apiPackage>
-                          <!--  <configOptions>
-                                <generateClientAsBean>true</generateClientAsBean>
-                            </configOptions>-->
+                            <configOptions>
+                                <!-- does not work at first glance -->
+<!--                                <generateClientAsBean>true</generateClientAsBean>-->
+                            </configOptions>
                         </configuration>
                     </execution>
                 </executions>
