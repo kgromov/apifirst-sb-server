@@ -2,10 +2,12 @@ package org.kgromov.apifirst.server.exceptions;
 
 import org.zalando.problem.AbstractThrowableProblem;
 
+import static org.zalando.problem.Status.NOT_FOUND;
+
 public class ResourceNotFoundException extends AbstractThrowableProblem {
 
     public ResourceNotFoundException() {
-        this("Requested Entity Not Found");
+        this("Requested Resource Not Found");
     }
 
     public ResourceNotFoundException(String message) {
@@ -13,6 +15,6 @@ public class ResourceNotFoundException extends AbstractThrowableProblem {
     }
 
     public ResourceNotFoundException(String message, String detail) {
-        super(null, message, org.zalando.problem.Status.NOT_FOUND, detail);
+        super(null, message, NOT_FOUND, detail);
     }
 }

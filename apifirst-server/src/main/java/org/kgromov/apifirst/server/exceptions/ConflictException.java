@@ -1,19 +1,11 @@
 package org.kgromov.apifirst.server.exceptions;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.zalando.problem.AbstractThrowableProblem;
 
-@ResponseStatus(code = HttpStatus.CONFLICT)
-public class ConflictException extends RuntimeException {
+import static org.zalando.problem.Status.CONFLICT;
+
+public class ConflictException extends AbstractThrowableProblem {
     public ConflictException(String message) {
-        super(message);
-    }
-
-    public ConflictException(Throwable e) {
-
-    }
-
-    public ConflictException(String message, Throwable cause) {
-        super(message, cause);
+        super(null, message, CONFLICT);
     }
 }
