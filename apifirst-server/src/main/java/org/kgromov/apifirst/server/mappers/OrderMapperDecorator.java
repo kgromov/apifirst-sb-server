@@ -4,6 +4,7 @@ import org.kgromov.apifirst.model.OrderCreateDto;
 import org.kgromov.apifirst.model.OrderDto;
 import org.kgromov.apifirst.model.OrderUpdateDto;
 import org.kgromov.apifirst.server.domain.*;
+import org.kgromov.apifirst.server.exceptions.ResourceNotFoundException;
 import org.kgromov.apifirst.server.repositories.CustomerRepository;
 import org.kgromov.apifirst.server.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,8 @@ import java.util.ArrayList;
 
 public abstract class OrderMapperDecorator implements OrderMapper {
 
-    @Autowired
     @Qualifier("delegate")
+    @Autowired
     private OrderMapper delegate;
 
     @Autowired
@@ -29,7 +30,7 @@ public abstract class OrderMapperDecorator implements OrderMapper {
     @Override
     public void updateOrder(OrderUpdateDto orderDto, Order order) {
         delegate.updateOrder(orderDto, order);
-        Customer orderCustomer = customerRepository.findById(orderDto.getCustomerId()).orElseThrow();
+        Customer orderCustomer = customerRepository.findById(orderDto.getCustomerId()).orElseThrow(ResourceNotFoundException::new);
         order.setCustomer(orderCustomer);
 
         var selectedPaymentMethod = order.getCustomer().getPaymentMethods().stream()

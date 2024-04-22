@@ -2,6 +2,7 @@ package org.kgromov.apifirst.server.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.CustomerDto;
+import org.kgromov.apifirst.model.CustomerPatchDto;
 import org.kgromov.apifirst.server.services.CustomerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,9 +38,16 @@ public class CustomerController {
     }
 
     @PutMapping("/{customerId}")
-    ResponseEntity<CustomerDto> getCustomerById(@PathVariable UUID customerId,
-                                                @RequestBody CustomerDto updateDtp) {
+    ResponseEntity<CustomerDto> updateCustomer(@PathVariable UUID customerId,
+                                               @RequestBody CustomerDto updateDtp) {
         CustomerDto updatedCustomer = customerService.updateCustomer(customerId, updateDtp);
+        return ResponseEntity.ok(updatedCustomer);
+    }
+
+    @PatchMapping("/{customerId}")
+    ResponseEntity<CustomerDto> patchCustomer(@PathVariable UUID customerId,
+                                              @RequestBody CustomerPatchDto patchDto) {
+        CustomerDto updatedCustomer = customerService.patchCustomer(customerId, patchDto);
         return ResponseEntity.ok(updatedCustomer);
     }
 
