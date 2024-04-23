@@ -2,16 +2,12 @@ package org.kgromov.apifirst.server.controllers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.kgromov.apifirst.model.OrderCreateDto;
-import org.kgromov.apifirst.model.OrderDto;
-import org.kgromov.apifirst.model.OrderLineCreateDto;
-import org.kgromov.apifirst.model.OrderUpdateDto;
+import org.kgromov.apifirst.model.*;
 import org.kgromov.apifirst.server.domain.Order;
 import org.kgromov.apifirst.server.mappers.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -26,7 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 class OrderControllerTest extends BaseE2ETest {
-    @Autowired private OrderMapper orderMapper;
+    @Autowired
+    private OrderMapper orderMapper;
 
     @DisplayName("Test create new order")
     @Test
@@ -79,6 +76,84 @@ class OrderControllerTest extends BaseE2ETest {
                 .andExpect(openApi().isValid(openApiUrl));
     }
 
+    @DisplayName("Test update order")
+    @Test
+    @Transactional
+    void updateOrder() throws Exception {
+        testOrder.getOrderLines().getFirst().setOrderQuantity(222);
+        OrderUpdateDto orderUpdate = orderMapper.orderToUpdateDto(testOrder);
+
+        var resultActions = mockMvc.perform(put(BASE_URL + "/{orderId}", testOrder.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderUpdate))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(openApi().isValid(openApiUrl));
+        OrderDto updatedOrder = objectMapper.reader().readValue(resultActions.andReturn().getResponse().getContentAsString(), OrderDto.class);
+        assertThat(updatedOrder.getId()).isEqualTo(testOrder.getId());
+        assertThat(updatedOrder.getOrderLines().getFirst().getOrderQuantity()).isEqualTo(222);
+     /*   perform
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(testOrder.getId().toString()));
+                .andExpect(jsonPath("$.orderLines[0].orderQuantity").value(222));*/
+    }
+
+    @DisplayName("Test update order that does not exist by id")
+    @Test
+    @Transactional
+    void updateOrderNotFound() throws Exception {
+        OrderUpdateDto orderUpdate = orderMapper.orderToUpdateDto(testOrder);
+
+        mockMvc.perform(put(BASE_URL + "/{orderId}", UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderUpdate))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(openApi().isValid(openApiUrl));
+    }
+
+    @DisplayName("Test patch order")
+    @Test
+    @Transactional
+    void patchOrder() throws Exception {
+        var orderPatch = OrderPatchDto.builder()
+                .orderLines(List.of(OrderLinePatchDto.builder()
+                        .id(testOrder.getOrderLines().getFirst().getId())
+                        .orderQuantity(333)
+                        .build()))
+                .build();
+
+        var resultActions = mockMvc.perform(patch(BASE_URL + "/{orderId}", testOrder.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderPatch))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(openApi().isValid(openApiUrl));
+
+        OrderDto updatedOrder = objectMapper.reader().readValue(resultActions.andReturn().getResponse().getContentAsString(), OrderDto.class);
+        assertThat(updatedOrder.getId()).isEqualTo(testOrder.getId());
+        assertThat(updatedOrder.getOrderLines().getFirst().getOrderQuantity()).isEqualTo(333);
+    }
+
+    @DisplayName("Test Patch Order Not Found")
+    @Test
+    @Transactional
+    void testPatchOrderNotFound() throws Exception {
+        var orderPatch = OrderPatchDto.builder()
+                .orderLines(List.of(OrderLinePatchDto.builder()
+                        .id(testOrder.getOrderLines().getFirst().getId())
+                        .orderQuantity(333)
+                        .build()))
+                .build();
+
+        mockMvc.perform(patch(BASE_URL + "/{orderId}", UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderPatch))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(openApi().isValid(openApiUrl));
+    }
+
     @DisplayName("Test delete order")
     @Test
     @Transactional
@@ -97,42 +172,6 @@ class OrderControllerTest extends BaseE2ETest {
     @Test
     void deleteOrderNotFound() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/{orderId}", UUID.randomUUID()))
-                .andExpect(status().isNotFound())
-                .andExpect(openApi().isValid(openApiUrl));
-    }
-
-    @DisplayName("Test update order")
-    @Test
-    @Transactional
-    void updateOrder() throws Exception {
-        testOrder.getOrderLines().getFirst().setOrderQuantity(222);
-        OrderUpdateDto orderUpdate = orderMapper.orderToUpdateDto(testOrder);
-
-        ResultActions perform = mockMvc.perform(put(BASE_URL + "/{orderId}", testOrder.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderUpdate))
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(openApi().isValid(openApiUrl));
-        OrderDto updatedOrder = objectMapper.reader().readValue(perform.andReturn().getResponse().getContentAsString(), OrderDto.class);
-        assertThat(updatedOrder.getId()).isEqualTo(testOrder.getId());
-        assertThat(updatedOrder.getOrderLines().getFirst().getOrderQuantity()).isEqualTo(222);
-     /*   perform
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(testOrder.getId().toString()));
-                .andExpect(jsonPath("$.orderLines[0].orderQuantity").value(222));*/
-    }
-
-    @DisplayName("Test update order that does not exist by id")
-    @Test
-    @Transactional
-    void updateOrderNotFound() throws Exception {
-        OrderUpdateDto orderUpdate = orderMapper.orderToUpdateDto(testOrder);
-
-        mockMvc.perform(put(BASE_URL + "/{orderId}", UUID.randomUUID())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderUpdate))
-                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(openApi().isValid(openApiUrl));
     }

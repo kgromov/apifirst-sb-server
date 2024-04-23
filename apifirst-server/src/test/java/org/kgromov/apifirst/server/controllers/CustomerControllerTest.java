@@ -3,10 +3,7 @@ package org.kgromov.apifirst.server.controllers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.kgromov.apifirst.model.AddressDto;
-import org.kgromov.apifirst.model.CustomerDto;
-import org.kgromov.apifirst.model.NameDto;
-import org.kgromov.apifirst.model.PaymentMethodDto;
+import org.kgromov.apifirst.model.*;
 import org.kgromov.apifirst.server.domain.Customer;
 import org.kgromov.apifirst.server.mappers.CustomerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,6 +128,37 @@ class CustomerControllerTest extends BaseE2ETest {
         assertThat(customerRepository.findById(savedCustomer.getId())).isEmpty();
     }
 
+    @Transactional
+    @DisplayName("Test Patch Customer")
+    @Test
+    void testPatchCustomer() throws Exception {
+        var customerPatch = this.createCustomerPatchDto(testCustomer);
+
+        mockMvc.perform(patch(BASE_URL + "/{customerId}", testCustomer.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customerPatch)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name.firstName").value("Updated"))
+                .andExpect(jsonPath("$.paymentMethods[0].displayName").value("NEW NAME"))
+                .andExpect(openApi().isValid(openApiUrl));
+    }
+
+    @Transactional
+    @DisplayName("Test Patch Customer Not Found")
+    @Test
+    void testPatchCustomerNotFound() throws Exception {
+        var customerPatch = this.createCustomerPatchDto(testCustomer);
+
+        mockMvc.perform(patch(BASE_URL + "/{customerId}", UUID.randomUUID())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customerPatch)))
+                .andExpect(status().isNotFound())
+                .andExpect(openApi().isValid(openApiUrl));
+    }
+
+
     @DisplayName("Test delete customer but random UUID")
     @Test
     void deleteCustomerNotFound() throws Exception {
@@ -189,6 +217,17 @@ class CustomerControllerTest extends BaseE2ETest {
                         .expiryMonth(12)
                         .expiryYear(26)
                         .cvv(456)
+                        .build()))
+                .build();
+    }
+    private CustomerPatchDto createCustomerPatchDto(Customer customer) {
+        return CustomerPatchDto.builder()
+                .name(CustomerNamePatchDto.builder()
+                        .firstName("Updated")
+                        .build())
+                .paymentMethods(List.of(CustomerPaymentMethodPatchDto.builder()
+                        .id(customer.getPaymentMethods().getFirst().getId())
+                        .displayName("NEW NAME")
                         .build()))
                 .build();
     }

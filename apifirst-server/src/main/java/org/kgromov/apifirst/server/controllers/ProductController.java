@@ -3,6 +3,7 @@ package org.kgromov.apifirst.server.controllers;
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.ProductCreateDto;
 import org.kgromov.apifirst.model.ProductDto;
+import org.kgromov.apifirst.model.ProductPatchDto;
 import org.kgromov.apifirst.model.ProductUpdateDto;
 import org.kgromov.apifirst.server.services.ProductService;
 import org.springframework.http.ResponseEntity;
@@ -40,11 +41,17 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductById(productId));
     }
 
-
     @PutMapping("/{productId}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable UUID productId,
                                                     @RequestBody ProductUpdateDto updateDto) {
         ProductDto savedProduct = productService.updateProduct(productId, updateDto);
+        return ResponseEntity.ok(savedProduct);
+    }
+
+    @PatchMapping("/{productId}")
+    public ResponseEntity<ProductDto> patchProduct(@PathVariable UUID productId,
+                                                   @RequestBody ProductPatchDto patchDto) {
+        ProductDto savedProduct = productService.patchProduct(productId, patchDto);
         return ResponseEntity.ok(savedProduct);
     }
 

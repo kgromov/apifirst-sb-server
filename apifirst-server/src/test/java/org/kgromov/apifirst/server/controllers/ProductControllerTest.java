@@ -2,10 +2,7 @@ package org.kgromov.apifirst.server.controllers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.kgromov.apifirst.model.DimensionsDto;
-import org.kgromov.apifirst.model.ImageDto;
-import org.kgromov.apifirst.model.ProductCreateDto;
-import org.kgromov.apifirst.model.ProductUpdateDto;
+import org.kgromov.apifirst.model.*;
 import org.kgromov.apifirst.server.domain.Product;
 import org.kgromov.apifirst.server.mappers.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +44,7 @@ class ProductControllerTest extends BaseE2ETest {
                         .height(10)
                         .build())
                 .build();
-        mockMvc.perform(post(ProductController.BASE_URL)
+        mockMvc.perform(post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newProduct))
                 )
@@ -114,6 +111,35 @@ class ProductControllerTest extends BaseE2ETest {
         mockMvc.perform(put(BASE_URL + "/{productId}", UUID.randomUUID())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productUpdateDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(openApi().isValid(openApiUrl));
+    }
+
+    @DisplayName("Test patch product")
+    @Transactional
+    @Test
+    void patchProduct() throws Exception {
+        var productPatchDto = productMapper.productToPatchDto(testProduct);
+        productPatchDto.setDescription("Updated Description");
+
+        mockMvc.perform(patch(ProductController.BASE_URL + "/{productId}", testProduct.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPatchDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.description").value("Updated Description"))
+                .andExpect(openApi().isValid(openApiUrl));
+    }
+
+    @DisplayName("Test Patch Product Not Found")
+    @Transactional
+    @Test
+    void patchProductNotFound() throws Exception {
+        var productPatchDto = productMapper.productToPatchDto(testProduct);
+        productPatchDto.setDescription("Updated Description");
+
+        mockMvc.perform(patch(ProductController.BASE_URL + "/{productId}", UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productPatchDto)))
                 .andExpect(status().isNotFound())
                 .andExpect(openApi().isValid(openApiUrl));
     }
