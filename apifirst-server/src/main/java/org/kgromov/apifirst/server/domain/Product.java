@@ -41,7 +41,7 @@ public class Product {
     @Embedded
     private TimestampAudited timestampAudited;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
     @ManyToMany
     private List<Category> categories;

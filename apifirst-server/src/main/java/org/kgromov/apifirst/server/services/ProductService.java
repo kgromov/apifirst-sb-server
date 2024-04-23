@@ -3,6 +3,7 @@ package org.kgromov.apifirst.server.services;
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.ProductCreateDto;
 import org.kgromov.apifirst.model.ProductDto;
+import org.kgromov.apifirst.model.ProductPatchDto;
 import org.kgromov.apifirst.model.ProductUpdateDto;
 import org.kgromov.apifirst.server.exceptions.ConflictException;
 import org.kgromov.apifirst.server.exceptions.ResourceNotFoundException;
@@ -21,14 +22,6 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final OrderRepository orderRepository;
-
-    @Transactional
-    public ProductDto updateProduct(UUID productId, ProductUpdateDto product) {
-        var productToUpdate = productRepository.findById(productId).orElseThrow(ResourceNotFoundException::new);
-        productMapper.updateProduct(product, productToUpdate);
-        var updatedProduct = productRepository.saveAndFlush(productToUpdate);
-        return productMapper.productToDto(updatedProduct);
-    }
 
     @Transactional
     public ProductDto createProduct(ProductCreateDto createDto) {
@@ -51,6 +44,23 @@ public class ProductService {
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
+    @Transactional
+    public ProductDto updateProduct(UUID productId, ProductUpdateDto product) {
+        var productToUpdate = productRepository.findById(productId).orElseThrow(ResourceNotFoundException::new);
+        productMapper.updateProduct(product, productToUpdate);
+        var updatedProduct = productRepository.saveAndFlush(productToUpdate);
+        return productMapper.productToDto(updatedProduct);
+    }
+
+    @Transactional
+    public ProductDto patchProduct(UUID productId, ProductPatchDto patchDto) {
+        var productToUpdate = productRepository.findById(productId).orElseThrow(ResourceNotFoundException::new);
+        productMapper.patchProduct(patchDto, productToUpdate);
+        var patchedProduct = productRepository.saveAndFlush(productToUpdate);
+        return productMapper.productToDto(patchedProduct);
+    }
+
+    @Transactional
     public void deleteProduct(UUID productId) {
         productRepository.findById(productId).ifPresentOrElse(product -> {
                     if (orderRepository.existsByOrderLines_Product(product)) {

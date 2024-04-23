@@ -2,6 +2,7 @@ package org.kgromov.apifirst.server.mappers;
 
 import org.kgromov.apifirst.model.OrderCreateDto;
 import org.kgromov.apifirst.model.OrderDto;
+import org.kgromov.apifirst.model.OrderPatchDto;
 import org.kgromov.apifirst.model.OrderUpdateDto;
 import org.kgromov.apifirst.server.domain.*;
 import org.kgromov.apifirst.server.exceptions.ResourceNotFoundException;
@@ -26,6 +27,43 @@ public abstract class OrderMapperDecorator implements OrderMapper {
 
     @Autowired
     private PaymentMethodMapper paymentMethodMapper;
+
+    @Override
+    public void patchOrder(OrderPatchDto orderPatchDto, Order target) {
+        delegate.patchOrder(orderPatchDto, target);
+
+        if (orderPatchDto.getCustomerId() != null) {
+            Customer customer = customerRepository.findById(orderPatchDto.getCustomerId()).orElseThrow();
+            target.setCustomer(customer);
+        }
+
+        if (orderPatchDto.getSelectPaymentMethodId() != null) {
+            PaymentMethod selectedPaymentMethod = target.getCustomer().getPaymentMethods().stream()
+                    .filter(pm -> pm.getId().equals(orderPatchDto.getSelectPaymentMethodId()))
+                    .findFirst()
+                    .orElseThrow();
+            target.setSelectedPaymentMethod(selectedPaymentMethod);
+        }
+
+        if (orderPatchDto.getOrderLines() != null && !orderPatchDto.getOrderLines().isEmpty()) {
+            orderPatchDto.getOrderLines().forEach(orderLinePatchDto -> {
+                OrderLine existingOrderLine = target.getOrderLines().stream()
+                        .filter(ol -> ol.getId().equals(orderLinePatchDto.getId()))
+                        .findFirst()
+                        .orElseThrow();
+
+                if (orderLinePatchDto.getProductId() != null) {
+                    Product product = productRepository.findById(orderLinePatchDto.getProductId())
+                            .orElseThrow(ResourceNotFoundException::new);
+                    existingOrderLine.setProduct(product);
+                }
+
+                if (orderLinePatchDto.getOrderQuantity() != null) {
+                    existingOrderLine.setOrderQuantity(orderLinePatchDto.getOrderQuantity());
+                }
+            });
+        }
+    }
 
     @Override
     public void updateOrder(OrderUpdateDto orderDto, Order order) {

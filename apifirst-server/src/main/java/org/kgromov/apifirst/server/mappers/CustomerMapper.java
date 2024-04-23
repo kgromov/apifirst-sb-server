@@ -23,8 +23,8 @@ public interface CustomerMapper {
     @Mapping(target = "timestampAudited.modified", ignore = true)
     void updateCustomer(CustomerDto updateDto, @MappingTarget Customer customer);
 
-    @Mapping(target = "timestampAudited.created", ignore = true)
-    @Mapping(target = "timestampAudited.modified", ignore = true)
+    @Mapping(source = "timestampAudited.created", target = "created")
+    @Mapping(source = "timestampAudited.modified", target = "modified")
     CustomerPatchDto customerToPatchDto(Customer customer);
 
     @Mapping(target = "id", ignore = true)

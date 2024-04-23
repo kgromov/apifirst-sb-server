@@ -2,12 +2,10 @@ package org.kgromov.apifirst.server.mappers;
 
 import org.kgromov.apifirst.model.ProductCreateDto;
 import org.kgromov.apifirst.model.ProductDto;
+import org.kgromov.apifirst.model.ProductPatchDto;
 import org.kgromov.apifirst.model.ProductUpdateDto;
 import org.kgromov.apifirst.server.domain.Product;
-import org.mapstruct.DecoratedWith;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 @Mapper
 @DecoratedWith(ProductMapperDecorator.class)
@@ -44,5 +42,19 @@ public interface ProductMapper {
 
     @Mapping(source = "timestampAudited.created", target = "created")
     @Mapping(source = "timestampAudited.modified", target = "modified")
+    @Mapping(target = "images", ignore = true)
     ProductDto productToDto(Product product);
+
+
+    @Mapping(target = "categories", ignore = true)
+    ProductPatchDto productToPatchDto(Product product);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "timestampAudited.created", ignore = true)
+    @Mapping(target = "timestampAudited.modified", ignore = true)
+    @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "images", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+            nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+    void patchProduct(ProductPatchDto productPatchDto, @MappingTarget Product target);
 }

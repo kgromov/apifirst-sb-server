@@ -62,8 +62,9 @@ public class CustomerService {
                 });
     }
 
+    @Transactional
     public CustomerDto patchCustomer(UUID customerId, CustomerPatchDto patchDto) {
-        Customer existingCustomer = customerRepository.findById(customerId).orElseThrow(ResourceNotFoundException::new);
+        var existingCustomer = customerRepository.findById(customerId).orElseThrow(ResourceNotFoundException::new);
         customerMapper.patchCustomer(patchDto, existingCustomer);
         return customerMapper.customerToDto(customerRepository.saveAndFlush(existingCustomer));
     }

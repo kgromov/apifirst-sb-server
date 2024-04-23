@@ -3,6 +3,7 @@ package org.kgromov.apifirst.server.controllers;
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.OrderCreateDto;
 import org.kgromov.apifirst.model.OrderDto;
+import org.kgromov.apifirst.model.OrderPatchDto;
 import org.kgromov.apifirst.model.OrderUpdateDto;
 import org.kgromov.apifirst.server.services.OrderService;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,14 @@ public class OrderController {
         OrderDto savedOrder = orderService.updateOrder(orderId, orderUpdateDto);
         return ResponseEntity.ok(savedOrder);
     }
+
+    @PatchMapping("/{orderId}")
+    ResponseEntity<OrderDto> patchOrder(@PathVariable("orderId") UUID orderId,
+                                        @RequestBody OrderPatchDto orderPatchDto) {
+        OrderDto savedOrder = orderService.patchOrder(orderId, orderPatchDto);
+        return ResponseEntity.ok(savedOrder);
+    }
+
 
     @DeleteMapping("/{orderId}")
     ResponseEntity<Void> deleteOrder(@PathVariable UUID orderId) {

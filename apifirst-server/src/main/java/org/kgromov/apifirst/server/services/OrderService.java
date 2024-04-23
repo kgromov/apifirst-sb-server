@@ -3,6 +3,7 @@ package org.kgromov.apifirst.server.services;
 import lombok.RequiredArgsConstructor;
 import org.kgromov.apifirst.model.OrderCreateDto;
 import org.kgromov.apifirst.model.OrderDto;
+import org.kgromov.apifirst.model.OrderPatchDto;
 import org.kgromov.apifirst.model.OrderUpdateDto;
 import org.kgromov.apifirst.server.exceptions.ResourceNotFoundException;
 import org.kgromov.apifirst.server.domain.Order;
@@ -57,5 +58,12 @@ public class OrderService {
                 () -> {
                     throw new ResourceNotFoundException("Order not found");
                 });
+    }
+
+    @Transactional
+    public OrderDto patchOrder(UUID orderId, OrderPatchDto patchDto) {
+        var existingOrder = orderRepository.findById(orderId).orElseThrow(ResourceNotFoundException::new);
+        orderMapper.patchOrder(patchDto, existingOrder);
+        return orderMapper.orderToDto(orderRepository.saveAndFlush(existingOrder));
     }
 }
