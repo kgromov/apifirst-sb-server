@@ -16,11 +16,13 @@ import org.springframework.web.context.WebApplicationContext;
 import org.zalando.logbook.Logbook;
 import org.zalando.logbook.servlet.LogbookFilter;
 
+// TODO: fix to use test containers; use @WebMvcTest for controllers and layers for others tests
 public abstract class BaseE2ETest {
     @Autowired protected CustomerRepository customerRepository;
     @Autowired protected ProductRepository productRepository;
     @Autowired protected OrderRepository orderRepository;
     @Autowired protected WebApplicationContext wac;
+    // seems new ObjectMapper().findAndRegisterModules(); is default implementation
     @Autowired protected ObjectMapper objectMapper;
     @Value("${openapi.docs.uri}")
     protected String openApiUrl;

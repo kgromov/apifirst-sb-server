@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -9,7 +7,13 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>apifirst-api</artifactId>
+    <artifactId>apifirst-gen</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>apifirst-api</module>
+        <module>apifirst-client</module>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -37,7 +41,8 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.0.1</version>
+<!--                <version>7.0.1</version>-->
+                <version>7.5.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -48,7 +53,7 @@
                             <inputSpec>https://api.redocly.com/registry/bundle/kgromov/API%20First%20-%20Spring%20Boot%20-%20Development/v1/openapi.yaml?branch=development</inputSpec>
                             <generatorName>java</generatorName>
                             <library>resttemplate</library>
-<!--                            <library>webclient</library>-->
+<!--                              <library>webclient</library>-->
                             <modelPackage>org.kgromov.apifirst.model</modelPackage>
                             <generateApiDocumentation>false</generateApiDocumentation>
                             <generateModelDocumentation>false</generateModelDocumentation>
@@ -65,7 +70,6 @@
                                 <useBeanValidation>true</useBeanValidation>
                                 <openApiNullable>false</openApiNullable>
                                 <additionalModelTypeAnnotations>@lombok.Builder @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
-<!--                                <generateClientAsBean>true</generateClientAsBean>-->
                             </configOptions>
                         </configuration>
                     </execution>
@@ -73,5 +77,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

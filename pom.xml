@@ -17,8 +17,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>apifirst-api</module>
         <module>apifirst-server</module>
+        <module>apifirst-gen</module>
     </modules>
 
     <properties>
