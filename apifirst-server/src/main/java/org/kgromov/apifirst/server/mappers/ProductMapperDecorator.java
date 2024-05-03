@@ -53,6 +53,7 @@ public abstract class ProductMapperDecorator implements ProductMapper {
     }
 
     private void updateImages(ProductUpdateDto productUpdateDto, Product product) {
+        product.setImages(new ArrayList<>());
         if (productUpdateDto.getImages() != null) {
             productUpdateDto.getImages().stream()
                     .filter(imageDto -> Objects.nonNull(imageDto.getId()))

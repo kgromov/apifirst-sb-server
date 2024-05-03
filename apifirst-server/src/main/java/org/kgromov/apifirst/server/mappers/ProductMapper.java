@@ -42,7 +42,6 @@ public interface ProductMapper {
 
     @Mapping(source = "timestampAudited.created", target = "created")
     @Mapping(source = "timestampAudited.modified", target = "modified")
-    @Mapping(target = "images", ignore = true)
     ProductDto productToDto(Product product);
 
 
