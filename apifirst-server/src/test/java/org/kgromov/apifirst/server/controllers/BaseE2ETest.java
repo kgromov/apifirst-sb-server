@@ -34,8 +34,6 @@ public abstract class BaseE2ETest {
 
     @BeforeEach
     void setUp() {
-        // workaround from https://bitbucket.org/atlassian/swagger-request-validator/issues/406/path-params-dont-work-with-openapi-version
-        System.setProperty("bind-type", "true");
         testCustomer = customerRepository.findAll().getFirst();
         testProduct = productRepository.findAll().getFirst();
         testOrder = orderRepository.findAll().getFirst();

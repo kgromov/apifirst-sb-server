@@ -50,7 +50,7 @@
                         </goals>
                         <!-- plugin configuration options - kind of language agnostic -->
                         <configuration>
-                            <inputSpec>https://api.redocly.com/registry/bundle/kgromov/API%20First%20-%20Spring%20Boot%20-%20Development/v1/openapi.yaml?branch=development</inputSpec>
+                            <inputSpec>https://api.redocly.com/registry/bundle/kgromov/API%20First%20-%20Spring%20Boot%20-%20Development/v1/openapi.yaml?branch=openapi_3.0.3</inputSpec>
                             <generatorName>java</generatorName>
                             <library>resttemplate</library>
 <!--                              <library>webclient</library>-->

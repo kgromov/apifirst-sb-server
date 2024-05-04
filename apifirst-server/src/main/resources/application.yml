@@ -1,6 +1,6 @@
 openapi:
   docs:
-    uri: "https://api.redocly.com/registry/bundle/kgromov/API%20First%20-%20Spring%20Boot%20-%20Development/v1/openapi.yaml?branch=development"
+    uri: "https://api.redocly.com/registry/bundle/kgromov/API%20First%20-%20Spring%20Boot%20-%20Development/v1/openapi.yaml?branch=openapi_3.0.3"
 
 logging:
   level:
