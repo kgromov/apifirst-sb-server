@@ -19,12 +19,15 @@
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <problem-spring-web.version>0.29.1</problem-spring-web.version>
         <logbook.version>3.8.0</logbook.version>
-        <!-- JaCoCo Properties -->
         <jacoco.version>0.8.12</jacoco.version>
+        <sonar.plugin.version>4.0.0.4121</sonar.plugin.version>
+        <sonar.language>java</sonar.language>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
-        <sonar.language>java</sonar.language>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.sources>.</sonar.sources>
+        <sonar.inclusions>src/main/**</sonar.inclusions>
+        <sonar.exclusions>**/generated-sources/**</sonar.exclusions>
     </properties>
 
     <dependencies>
@@ -90,6 +93,16 @@
     </dependencies>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${sonar.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -158,6 +171,7 @@
                         <exclude>org/kgromov/**/BaseEntity.class</exclude>
                         <exclude>com/kgromov/**/*Dto.*</exclude>
                         <exclude>**/config/*</exclude>
+                        <exclude>**/generated-sources/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
