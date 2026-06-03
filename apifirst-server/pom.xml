@@ -28,6 +28,10 @@
         <sonar.sources>.</sonar.sources>
         <sonar.inclusions>src/main/**</sonar.inclusions>
         <sonar.exclusions>**/generated-sources/**</sonar.exclusions>
+        <sonar.token>${env.SONAR_TOKEN}</sonar.token>
+        <sonar.host.url>${env.SONAR_HOST_URL}</sonar.host.url>
+        <sonar.projectKey>${project.artifactId}</sonar.projectKey>
+        <sonar.projectName>${project.artifactId}</sonar.projectName>
     </properties>
 
     <dependencies>
@@ -156,6 +160,7 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <jmxPort>9002</jmxPort>
                 </configuration>
             </plugin>
             <plugin>
